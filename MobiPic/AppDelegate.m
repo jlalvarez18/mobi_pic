@@ -67,7 +67,9 @@
     if (!account) {
         UIViewController *rootController = self.window.rootViewController;
         
-        [rootController presentViewController:self.authController animated:YES completion:nil];
+        if (rootController.presentedViewController == nil) {
+            [rootController presentViewController:self.authController animated:YES completion:nil];
+        }
     }
 }
 

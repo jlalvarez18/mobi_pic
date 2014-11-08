@@ -18,7 +18,7 @@
 		0D5DAD001A0E9244005CE879 /* AuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D5DACFE1A0E9244005CE879 /* AuthViewController.xib */; };
 		0DE859D11A0E8F370065868B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D01A0E8F370065868B /* main.m */; };
 		0DE859D41A0E8F370065868B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D31A0E8F370065868B /* AppDelegate.m */; };
-		0DE859D71A0E8F370065868B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D61A0E8F370065868B /* ViewController.m */; };
+		0DE859D71A0E8F370065868B /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D61A0E8F370065868B /* MainViewController.m */; };
 		0DE859DA1A0E8F370065868B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DE859D81A0E8F370065868B /* Main.storyboard */; };
 		0DE859DC1A0E8F370065868B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0DE859DB1A0E8F370065868B /* Images.xcassets */; };
 		0DE859DF1A0E8F380065868B /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DE859DD1A0E8F380065868B /* LaunchScreen.xib */; };
@@ -51,8 +51,8 @@
 		0DE859D01A0E8F370065868B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		0DE859D21A0E8F370065868B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		0DE859D31A0E8F370065868B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		0DE859D51A0E8F370065868B /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		0DE859D61A0E8F370065868B /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		0DE859D51A0E8F370065868B /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		0DE859D61A0E8F370065868B /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		0DE859D91A0E8F370065868B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0DE859DB1A0E8F370065868B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		0DE859DE1A0E8F380065868B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -100,6 +100,26 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		0D5DAD021A0E9B18005CE879 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				0D5DACFC1A0E9244005CE879 /* AuthViewController.h */,
+				0D5DACFD1A0E9244005CE879 /* AuthViewController.m */,
+				0D5DACFE1A0E9244005CE879 /* AuthViewController.xib */,
+			);
+			name = Auth;
+			sourceTree = "<group>";
+		};
+		0D5DAD031A0E9B1D005CE879 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				0DE859D51A0E8F370065868B /* MainViewController.h */,
+				0DE859D61A0E8F370065868B /* MainViewController.m */,
+				0DE859D81A0E8F370065868B /* Main.storyboard */,
+			);
+			name = Main;
+			sourceTree = "<group>";
+		};
 		0DE859C21A0E8F370065868B = {
 			isa = PBXGroup;
 			children = (
@@ -123,12 +143,8 @@
 			children = (
 				0DE859D21A0E8F370065868B /* AppDelegate.h */,
 				0DE859D31A0E8F370065868B /* AppDelegate.m */,
-				0D5DACFC1A0E9244005CE879 /* AuthViewController.h */,
-				0D5DACFD1A0E9244005CE879 /* AuthViewController.m */,
-				0D5DACFE1A0E9244005CE879 /* AuthViewController.xib */,
-				0DE859D51A0E8F370065868B /* ViewController.h */,
-				0DE859D61A0E8F370065868B /* ViewController.m */,
-				0DE859D81A0E8F370065868B /* Main.storyboard */,
+				0D5DAD021A0E9B18005CE879 /* Auth */,
+				0D5DAD031A0E9B1D005CE879 /* Main */,
 				0DE859DB1A0E8F370065868B /* Images.xcassets */,
 				0DE859DD1A0E8F380065868B /* LaunchScreen.xib */,
 				0D5DACED1A0E9063005CE879 /* Frameworks */,
@@ -265,7 +281,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D5DACFF1A0E9244005CE879 /* AuthViewController.m in Sources */,
-				0DE859D71A0E8F370065868B /* ViewController.m in Sources */,
+				0DE859D71A0E8F370065868B /* MainViewController.m in Sources */,
 				0DE859D41A0E8F370065868B /* AppDelegate.m in Sources */,
 				0DE859D11A0E8F370065868B /* main.m in Sources */,
 			);
