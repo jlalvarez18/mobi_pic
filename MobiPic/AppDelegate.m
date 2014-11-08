@@ -8,16 +8,40 @@
 
 #import "AppDelegate.h"
 
+#import <Dropbox/Dropbox.h>
+
+#import "AuthViewController.h"
+
 @interface AppDelegate ()
+
+@property (nonatomic, readonly) AuthViewController *authController;
 
 @end
 
 @implementation AppDelegate
 
+@synthesize authController = _authController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    [self setupDropboxManager];
+    
     return YES;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    DBAccount *account = [[DBAccountManager sharedManager] handleOpenURL:url];
+    if (account) {
+        [self processDropboxAccount:account];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.window.rootViewController dismissViewControllerAnimated:YES completion:nil];
+        });
+        
+        return YES;
+    }
+    
+    return NO;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -36,10 +60,54 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    DBAccount *account = [[DBAccountManager sharedManager] linkedAccount];
+    
+    // if there is no linked account, present the auth controller
+    if (!account) {
+        UIViewController *rootController = self.window.rootViewController;
+        
+        [rootController presentViewController:self.authController animated:YES completion:nil];
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+#pragma mark -
+#pragma mark Setup Methods
+
+- (void)setupDropboxManager
+{
+    DBAccountManager *accountManager = [[DBAccountManager alloc] initWithAppKey:@"1dvjlswwbr64rx0" secret:@"u4i7ermhrn0fczi"];
+    [DBAccountManager setSharedManager:accountManager];
+    
+    DBAccount *account = [[DBAccountManager sharedManager] linkedAccount];
+    
+    [self processDropboxAccount:account];
+}
+
+- (void)processDropboxAccount:(DBAccount *)account
+{
+    if (account) {
+        DBFilesystem *fileSystem = [[DBFilesystem alloc] initWithAccount:account];
+        [DBFilesystem setSharedFilesystem:fileSystem];
+    }
+}
+
+#pragma mark -
+#pragma mark Accessor Methods
+
+- (AuthViewController *)authController
+{
+    if (_authController) {
+        return _authController;
+    }
+    
+    _authController = [[AuthViewController alloc] init];
+    
+    return _authController;
 }
 
 @end

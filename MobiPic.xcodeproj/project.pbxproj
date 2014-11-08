@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D5DACEF1A0E9070005CE879 /* Dropbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D5DACEE1A0E9070005CE879 /* Dropbox.framework */; };
+		0D5DACF11A0E909D005CE879 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D5DACF01A0E909D005CE879 /* CFNetwork.framework */; };
+		0D5DACF31A0E90A2005CE879 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D5DACF21A0E90A2005CE879 /* Security.framework */; };
+		0D5DACF51A0E90A9005CE879 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D5DACF41A0E90A9005CE879 /* SystemConfiguration.framework */; };
+		0D5DACF71A0E90AF005CE879 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D5DACF61A0E90AF005CE879 /* QuartzCore.framework */; };
+		0D5DACF91A0E90C0005CE879 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D5DACF81A0E90C0005CE879 /* libc++.dylib */; };
+		0D5DACFB1A0E90C9005CE879 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D5DACFA1A0E90C9005CE879 /* libz.dylib */; };
+		0D5DACFF1A0E9244005CE879 /* AuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D5DACFD1A0E9244005CE879 /* AuthViewController.m */; };
+		0D5DAD001A0E9244005CE879 /* AuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D5DACFE1A0E9244005CE879 /* AuthViewController.xib */; };
 		0DE859D11A0E8F370065868B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D01A0E8F370065868B /* main.m */; };
 		0DE859D41A0E8F370065868B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D31A0E8F370065868B /* AppDelegate.m */; };
 		0DE859D71A0E8F370065868B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D61A0E8F370065868B /* ViewController.m */; };
@@ -27,6 +36,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0D5DACEE1A0E9070005CE879 /* Dropbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Dropbox.framework; sourceTree = "<group>"; };
+		0D5DACF01A0E909D005CE879 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		0D5DACF21A0E90A2005CE879 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		0D5DACF41A0E90A9005CE879 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		0D5DACF61A0E90AF005CE879 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		0D5DACF81A0E90C0005CE879 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		0D5DACFA1A0E90C9005CE879 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		0D5DACFC1A0E9244005CE879 /* AuthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthViewController.h; sourceTree = "<group>"; };
+		0D5DACFD1A0E9244005CE879 /* AuthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthViewController.m; sourceTree = "<group>"; };
+		0D5DACFE1A0E9244005CE879 /* AuthViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AuthViewController.xib; sourceTree = "<group>"; };
 		0DE859CB1A0E8F370065868B /* MobiPic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobiPic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DE859CF1A0E8F370065868B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0DE859D01A0E8F370065868B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -47,6 +66,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0D5DACFB1A0E90C9005CE879 /* libz.dylib in Frameworks */,
+				0D5DACF91A0E90C0005CE879 /* libc++.dylib in Frameworks */,
+				0D5DACF71A0E90AF005CE879 /* QuartzCore.framework in Frameworks */,
+				0D5DACF51A0E90A9005CE879 /* SystemConfiguration.framework in Frameworks */,
+				0D5DACF31A0E90A2005CE879 /* Security.framework in Frameworks */,
+				0D5DACF11A0E909D005CE879 /* CFNetwork.framework in Frameworks */,
+				0D5DACEF1A0E9070005CE879 /* Dropbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -60,6 +86,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0D5DACED1A0E9063005CE879 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0D5DACFA1A0E90C9005CE879 /* libz.dylib */,
+				0D5DACF81A0E90C0005CE879 /* libc++.dylib */,
+				0D5DACEE1A0E9070005CE879 /* Dropbox.framework */,
+				0D5DACF61A0E90AF005CE879 /* QuartzCore.framework */,
+				0D5DACF41A0E90A9005CE879 /* SystemConfiguration.framework */,
+				0D5DACF21A0E90A2005CE879 /* Security.framework */,
+				0D5DACF01A0E909D005CE879 /* CFNetwork.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		0DE859C21A0E8F370065868B = {
 			isa = PBXGroup;
 			children = (
@@ -83,11 +123,15 @@
 			children = (
 				0DE859D21A0E8F370065868B /* AppDelegate.h */,
 				0DE859D31A0E8F370065868B /* AppDelegate.m */,
+				0D5DACFC1A0E9244005CE879 /* AuthViewController.h */,
+				0D5DACFD1A0E9244005CE879 /* AuthViewController.m */,
+				0D5DACFE1A0E9244005CE879 /* AuthViewController.xib */,
 				0DE859D51A0E8F370065868B /* ViewController.h */,
 				0DE859D61A0E8F370065868B /* ViewController.m */,
 				0DE859D81A0E8F370065868B /* Main.storyboard */,
 				0DE859DB1A0E8F370065868B /* Images.xcassets */,
 				0DE859DD1A0E8F380065868B /* LaunchScreen.xib */,
+				0D5DACED1A0E9063005CE879 /* Frameworks */,
 				0DE859CE1A0E8F370065868B /* Supporting Files */,
 			);
 			path = MobiPic;
@@ -199,6 +243,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0D5DAD001A0E9244005CE879 /* AuthViewController.xib in Resources */,
 				0DE859DA1A0E8F370065868B /* Main.storyboard in Resources */,
 				0DE859DF1A0E8F380065868B /* LaunchScreen.xib in Resources */,
 				0DE859DC1A0E8F370065868B /* Images.xcassets in Resources */,
@@ -219,6 +264,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0D5DACFF1A0E9244005CE879 /* AuthViewController.m in Sources */,
 				0DE859D71A0E8F370065868B /* ViewController.m in Sources */,
 				0DE859D41A0E8F370065868B /* AppDelegate.m in Sources */,
 				0DE859D11A0E8F370065868B /* main.m in Sources */,
@@ -343,6 +389,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/MobiPic",
+				);
+				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = MobiPic/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -353,6 +404,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/MobiPic",
+				);
+				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = MobiPic/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -412,6 +468,7 @@
 				0DE859F01A0E8F380065868B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		0DE859F11A0E8F380065868B /* Build configuration list for PBXNativeTarget "MobiPicTests" */ = {
 			isa = XCConfigurationList;
@@ -420,6 +477,7 @@
 				0DE859F31A0E8F380065868B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
