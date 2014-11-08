@@ -16,6 +16,7 @@
 		0D5DACFB1A0E90C9005CE879 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D5DACFA1A0E90C9005CE879 /* libz.dylib */; };
 		0D5DACFF1A0E9244005CE879 /* AuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D5DACFD1A0E9244005CE879 /* AuthViewController.m */; };
 		0D5DAD001A0E9244005CE879 /* AuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D5DACFE1A0E9244005CE879 /* AuthViewController.xib */; };
+		0D7412B91A0EB79600A16970 /* ImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D7412B81A0EB79600A16970 /* ImageCollectionViewCell.m */; };
 		0DE859D11A0E8F370065868B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D01A0E8F370065868B /* main.m */; };
 		0DE859D41A0E8F370065868B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D31A0E8F370065868B /* AppDelegate.m */; };
 		0DE859D71A0E8F370065868B /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D61A0E8F370065868B /* MainViewController.m */; };
@@ -23,6 +24,7 @@
 		0DE859DC1A0E8F370065868B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0DE859DB1A0E8F370065868B /* Images.xcassets */; };
 		0DE859DF1A0E8F380065868B /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DE859DD1A0E8F380065868B /* LaunchScreen.xib */; };
 		0DE859EB1A0E8F380065868B /* MobiPicTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859EA1A0E8F380065868B /* MobiPicTests.m */; };
+		A31C32779B84F17535486A22 /* libPods-MobiPic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A59F5EFA46335B42EB2D10BB /* libPods-MobiPic.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +48,8 @@
 		0D5DACFC1A0E9244005CE879 /* AuthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthViewController.h; sourceTree = "<group>"; };
 		0D5DACFD1A0E9244005CE879 /* AuthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthViewController.m; sourceTree = "<group>"; };
 		0D5DACFE1A0E9244005CE879 /* AuthViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AuthViewController.xib; sourceTree = "<group>"; };
+		0D7412B71A0EB79600A16970 /* ImageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCollectionViewCell.h; sourceTree = "<group>"; };
+		0D7412B81A0EB79600A16970 /* ImageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCollectionViewCell.m; sourceTree = "<group>"; };
 		0DE859CB1A0E8F370065868B /* MobiPic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobiPic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DE859CF1A0E8F370065868B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0DE859D01A0E8F370065868B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -59,6 +63,9 @@
 		0DE859E41A0E8F380065868B /* MobiPicTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobiPicTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DE859E91A0E8F380065868B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0DE859EA1A0E8F380065868B /* MobiPicTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MobiPicTests.m; sourceTree = "<group>"; };
+		24AC54B0E196B53F31D87223 /* Pods-MobiPic.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobiPic.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MobiPic/Pods-MobiPic.debug.xcconfig"; sourceTree = "<group>"; };
+		6D9016D346C430276C5D8CBC /* Pods-MobiPic.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobiPic.release.xcconfig"; path = "Pods/Target Support Files/Pods-MobiPic/Pods-MobiPic.release.xcconfig"; sourceTree = "<group>"; };
+		A59F5EFA46335B42EB2D10BB /* libPods-MobiPic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MobiPic.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +80,7 @@
 				0D5DACF31A0E90A2005CE879 /* Security.framework in Frameworks */,
 				0D5DACF11A0E909D005CE879 /* CFNetwork.framework in Frameworks */,
 				0D5DACEF1A0E9070005CE879 /* Dropbox.framework in Frameworks */,
+				A31C32779B84F17535486A22 /* libPods-MobiPic.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -116,6 +124,8 @@
 				0DE859D51A0E8F370065868B /* MainViewController.h */,
 				0DE859D61A0E8F370065868B /* MainViewController.m */,
 				0DE859D81A0E8F370065868B /* Main.storyboard */,
+				0D7412B71A0EB79600A16970 /* ImageCollectionViewCell.h */,
+				0D7412B81A0EB79600A16970 /* ImageCollectionViewCell.m */,
 			);
 			name = Main;
 			sourceTree = "<group>";
@@ -126,6 +136,8 @@
 				0DE859CD1A0E8F370065868B /* MobiPic */,
 				0DE859E71A0E8F380065868B /* MobiPicTests */,
 				0DE859CC1A0E8F370065868B /* Products */,
+				FDFC37E3693D55F487CD8F07 /* Pods */,
+				D5481CA8D0879DE48311E897 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -179,6 +191,23 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		D5481CA8D0879DE48311E897 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A59F5EFA46335B42EB2D10BB /* libPods-MobiPic.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FDFC37E3693D55F487CD8F07 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				24AC54B0E196B53F31D87223 /* Pods-MobiPic.debug.xcconfig */,
+				6D9016D346C430276C5D8CBC /* Pods-MobiPic.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -186,9 +215,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0DE859EE1A0E8F380065868B /* Build configuration list for PBXNativeTarget "MobiPic" */;
 			buildPhases = (
+				7CFAE1BFE744CEC029AE38D6 /* Check Pods Manifest.lock */,
 				0DE859C71A0E8F370065868B /* Sources */,
 				0DE859C81A0E8F370065868B /* Frameworks */,
 				0DE859C91A0E8F370065868B /* Resources */,
+				8F64170DB35D173DC2E7AC20 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -275,6 +306,39 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		7CFAE1BFE744CEC029AE38D6 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		8F64170DB35D173DC2E7AC20 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MobiPic/Pods-MobiPic-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		0DE859C71A0E8F370065868B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -282,6 +346,7 @@
 			files = (
 				0D5DACFF1A0E9244005CE879 /* AuthViewController.m in Sources */,
 				0DE859D71A0E8F370065868B /* MainViewController.m in Sources */,
+				0D7412B91A0EB79600A16970 /* ImageCollectionViewCell.m in Sources */,
 				0DE859D41A0E8F370065868B /* AppDelegate.m in Sources */,
 				0DE859D11A0E8F370065868B /* main.m in Sources */,
 			);
@@ -403,6 +468,7 @@
 		};
 		0DE859EF1A0E8F380065868B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 24AC54B0E196B53F31D87223 /* Pods-MobiPic.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -418,6 +484,7 @@
 		};
 		0DE859F01A0E8F380065868B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6D9016D346C430276C5D8CBC /* Pods-MobiPic.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				FRAMEWORK_SEARCH_PATHS = (

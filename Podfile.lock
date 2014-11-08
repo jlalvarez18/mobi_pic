@@ -1,0 +1,16 @@
+PODS:
+  - PureLayout (2.0.1)
+  - UAProgressView (0.1.1)
+  - UIImage-Resize (1.0.1)
+
+DEPENDENCIES:
+  - PureLayout (~> 2.0)
+  - UAProgressView
+  - UIImage-Resize (~> 1.0)
+
+SPEC CHECKSUMS:
+  PureLayout: 12eca5b6dc94f1a03fdf255d640604584ff1b55b
+  UAProgressView: c393bc53d1cabc077279e957c5898a5bb7bdb3ce
+  UIImage-Resize: fc57263eed2cd98f74e5ba4848bedae979a0bdf0
+
+COCOAPODS: 0.34.4
