@@ -58,78 +58,82 @@
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         self.navigationController.toolbarHidden = NO;
     } else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Camera Missing"
-                                                                       message:@"This app is pretty boring without a camera :("
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction *dismissAction = [UIAlertAction actionWithTitle:@"Dismiss"
-                                                                style:UIAlertActionStyleDefault
-                                                              handler:^(UIAlertAction *action) {
-                                                                  [alert dismissViewControllerAnimated:YES completion:nil];
-                                                              }];
-
-        [alert addAction:dismissAction];
-        
-        [self presentViewController:alert animated:YES completion:nil];
+//        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Camera Missing"
+//                                                                       message:@"This app is pretty boring without a camera :("
+//                                                                preferredStyle:UIAlertControllerStyleAlert];
+//        
+//        UIAlertAction *dismissAction = [UIAlertAction actionWithTitle:@"Dismiss"
+//                                                                style:UIAlertActionStyleDefault
+//                                                              handler:^(UIAlertAction *action) {
+//                                                                  [alert dismissViewControllerAnimated:YES completion:nil];
+//                                                              }];
+//
+//        [alert addAction:dismissAction];
+//        
+//        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 
 - (void)reloadFiles
 {
-    self.needToReloadFiles = YES;
+    DBAccount *account = [[DBAccountManager sharedManager] linkedAccount];
     
-    if (self.loadingFiles) {
-        // Currently loading files
-        return;
-    }
-    
-    self.loadingFiles = YES;
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        self.needToReloadFiles = NO;
+    if (account) {
+        self.needToReloadFiles = YES;
         
-        NSArray *infos = [self.filesystem listFolder:self.root error:nil];
+        if (self.loadingFiles) {
+            // Currently loading files
+            return;
+        }
         
-        NSSortDescriptor *sortDesc = [NSSortDescriptor sortDescriptorWithKey:@"modifiedTime" ascending:NO];
-        NSArray *sortedFileInfos = [infos sortedArrayUsingDescriptors:@[sortDesc]];
+        self.loadingFiles = YES;
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSMutableOrderedSet *newFiles = [NSMutableOrderedSet orderedSet];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            self.needToReloadFiles = NO;
             
-            [sortedFileInfos enumerateObjectsUsingBlock:^(DBFileInfo *info, NSUInteger idx, BOOL *stop) {
-                DBFile *file;
+            NSArray *infos = [self.filesystem listFolder:self.root error:nil];
+            
+            NSSortDescriptor *sortDesc = [NSSortDescriptor sortDescriptorWithKey:@"modifiedTime" ascending:NO];
+            NSArray *sortedFileInfos = [infos sortedArrayUsingDescriptors:@[sortDesc]];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSMutableOrderedSet *newFiles = [NSMutableOrderedSet orderedSet];
                 
-                if (info.thumbExists) {
-                    file = [self.filesystem openThumbnail:info.path ofSize:DBThumbSizeL inFormat:DBThumbFormatPNG error:nil];
-                } else {
-                    file = [self.filesystem openFile:info.path error:nil];
-                }
+                [sortedFileInfos enumerateObjectsUsingBlock:^(DBFileInfo *info, NSUInteger idx, BOOL *stop) {
+                    DBFile *file;
+                    
+                    if (info.thumbExists) {
+                        file = [self.filesystem openThumbnail:info.path ofSize:DBThumbSizeL inFormat:DBThumbFormatPNG error:nil];
+                    } else {
+                        file = [self.filesystem openFile:info.path error:nil];
+                    }
+                    
+                    if (file) {
+                        __weak id weakFile = file;
+                        __weak id weakSelf = self;
+                        
+                        [file addObserver:self block:^{
+                            [weakSelf reloadCellForFile:weakFile];
+                        }];
+                        
+                        [newFiles addObject:file];
+                    }
+                }];
                 
-                if (file) {
-                    __weak id weakFile = file;
-                    __weak id weakSelf = self;
-                    
-                    [file addObserver:self block:^{
-                        [weakSelf reloadCellForFile:weakFile];
-                    }];
-                    
-                    [newFiles addObject:file];
+                self.files = newFiles;
+                
+                [self.collectionView reloadData];
+                
+                self.loadingFiles = NO;
+                
+                if (self.needToReloadFiles) {
+                    // this means that the reloadFiles method was called while loading
+                    // so lets reload just in case
+                    [self reloadFiles];
                 }
-            }];
-            
-            self.files = newFiles;
-            
-            [self.collectionView reloadData];
-            
-            self.loadingFiles = NO;
-            
-            if (self.needToReloadFiles) {
-                // this means that the reloadFiles method was called while loading
-                // so lets reload just in case
-                [self reloadFiles];
-            }
+            });
         });
-    });
+    }
 }
 
 // Reloads the cell for the provided file
@@ -241,9 +245,7 @@
             [self.files insertObject:imageFile atIndex:0];
             
             [picker dismissViewControllerAnimated:YES completion:^{
-                NSIndexPath *indexPath = [self indexPathForFile:imageFile];
-                
-                [self.collectionView insertItemsAtIndexPaths:@[indexPath]];
+                [self reloadCellForFile:imageFile];
             }];
         } else {
             NSLog(@"%@", error);

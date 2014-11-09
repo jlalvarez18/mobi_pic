@@ -26,7 +26,7 @@ NSString *ImageCollectionViewCellIdentifier = @"ImageCollectionViewCellIdentifie
 {
     self = [super initWithFrame:frame];
     
-    self.backgroundColor = [UIColor lightGrayColor];
+    self.backgroundColor = [UIColor whiteColor];
     
     [self defineConstraints];
     
@@ -43,7 +43,7 @@ NSString *ImageCollectionViewCellIdentifier = @"ImageCollectionViewCellIdentifie
 
 - (void)defineConstraints
 {
-    [self.imageView autoPinEdgesToSuperviewMargins];
+    [self.imageView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
     
     [self.progressView autoCenterInSuperview];
 }
@@ -58,12 +58,11 @@ NSString *ImageCollectionViewCellIdentifier = @"ImageCollectionViewCellIdentifie
 
 - (void)setProgress:(float)progress
 {
-    self.progressView.progress = progress;
-    
-    if (progress >= 1.0) {
-        self.progressView.hidden = YES;
-    } else {
+    if (progress >= 0 && progress <= 1) {
         self.progressView.hidden = NO;
+        self.progressView.progress = progress;
+    } else {
+        self.progressView.hidden = YES;
     }
 }
 
@@ -79,6 +78,7 @@ NSString *ImageCollectionViewCellIdentifier = @"ImageCollectionViewCellIdentifie
     _imageView = [UIImageView newAutoLayoutView];
     _imageView.contentMode = UIViewContentModeScaleAspectFill;
     _imageView.clipsToBounds = YES;
+    _imageView.backgroundColor = [UIColor lightGrayColor];
     
     [self.contentView addSubview:_imageView];
     
