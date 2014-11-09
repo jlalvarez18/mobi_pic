@@ -17,6 +17,7 @@
 		0D5DACFF1A0E9244005CE879 /* AuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D5DACFD1A0E9244005CE879 /* AuthViewController.m */; };
 		0D5DAD001A0E9244005CE879 /* AuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D5DACFE1A0E9244005CE879 /* AuthViewController.xib */; };
 		0D7412B91A0EB79600A16970 /* ImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D7412B81A0EB79600A16970 /* ImageCollectionViewCell.m */; };
+		0DDD71261A0FC7AF00C76295 /* ImageCellViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DDD71251A0FC7AF00C76295 /* ImageCellViewModel.m */; };
 		0DE859D11A0E8F370065868B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D01A0E8F370065868B /* main.m */; };
 		0DE859D41A0E8F370065868B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D31A0E8F370065868B /* AppDelegate.m */; };
 		0DE859D71A0E8F370065868B /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D61A0E8F370065868B /* MainViewController.m */; };
@@ -50,6 +51,8 @@
 		0D5DACFE1A0E9244005CE879 /* AuthViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AuthViewController.xib; sourceTree = "<group>"; };
 		0D7412B71A0EB79600A16970 /* ImageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCollectionViewCell.h; sourceTree = "<group>"; };
 		0D7412B81A0EB79600A16970 /* ImageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCollectionViewCell.m; sourceTree = "<group>"; };
+		0DDD71241A0FC7AF00C76295 /* ImageCellViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCellViewModel.h; sourceTree = "<group>"; };
+		0DDD71251A0FC7AF00C76295 /* ImageCellViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCellViewModel.m; sourceTree = "<group>"; };
 		0DE859CB1A0E8F370065868B /* MobiPic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobiPic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DE859CF1A0E8F370065868B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0DE859D01A0E8F370065868B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -126,6 +129,8 @@
 				0DE859D81A0E8F370065868B /* Main.storyboard */,
 				0D7412B71A0EB79600A16970 /* ImageCollectionViewCell.h */,
 				0D7412B81A0EB79600A16970 /* ImageCollectionViewCell.m */,
+				0DDD71241A0FC7AF00C76295 /* ImageCellViewModel.h */,
+				0DDD71251A0FC7AF00C76295 /* ImageCellViewModel.m */,
 			);
 			name = Main;
 			sourceTree = "<group>";
@@ -346,6 +351,7 @@
 			files = (
 				0D5DACFF1A0E9244005CE879 /* AuthViewController.m in Sources */,
 				0DE859D71A0E8F370065868B /* MainViewController.m in Sources */,
+				0DDD71261A0FC7AF00C76295 /* ImageCellViewModel.m in Sources */,
 				0D7412B91A0EB79600A16970 /* ImageCollectionViewCell.m in Sources */,
 				0DE859D41A0E8F370065868B /* AppDelegate.m in Sources */,
 				0DE859D11A0E8F370065868B /* main.m in Sources */,

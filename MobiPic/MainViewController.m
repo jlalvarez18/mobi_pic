@@ -12,6 +12,7 @@
 #import <UIImage-Resize/UIImage+Resize.h>
 
 #import "ImageCollectionViewCell.h"
+#import "ImageCellViewModel.h"
 
 @interface MainViewController () <UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -21,9 +22,11 @@
 @property (nonatomic, strong) UIImagePickerController *pickerController;
 
 @property (nonatomic, strong) NSMutableOrderedSet *files;
+@property (nonatomic, strong) NSMutableDictionary *fileCache;
 
 @property (nonatomic) BOOL loadingFiles;
 @property (nonatomic) BOOL needToReloadFiles;
+@property (nonatomic) BOOL viewAppeared;
 
 @end
 
@@ -35,6 +38,7 @@
     self.title = NSLocalizedString(@"My Photos", nil);
     
     self.files = [NSMutableOrderedSet orderedSet];
+    self.fileCache = [NSMutableDictionary dictionary];
     
     [self.collectionView registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:ImageCollectionViewCellIdentifier];
     
@@ -53,7 +57,12 @@
 {
     [super viewWillAppear:animated];
     
-    [self reloadFiles];
+    if (!self.viewAppeared) {
+        // we only want to call this once when view appears
+        [self reloadFiles];
+        
+        self.viewAppeared = YES;
+    }
     
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         self.navigationController.toolbarHidden = NO;
@@ -98,31 +107,95 @@
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSMutableOrderedSet *newFiles = [NSMutableOrderedSet orderedSet];
+                NSMutableDictionary *newFileCache = [NSMutableDictionary dictionary];
+
+                NSMutableArray *addedFiles = [NSMutableArray array];
                 
                 [sortedFileInfos enumerateObjectsUsingBlock:^(DBFileInfo *info, NSUInteger idx, BOOL *stop) {
-                    DBFile *file;
+                    NSString *filename = info.path.name;
+                    DBFile *previouslyOpenedFile = self.fileCache[filename];
                     
-                    if (info.thumbExists) {
-                        file = [self.filesystem openThumbnail:info.path ofSize:DBThumbSizeL inFormat:DBThumbFormatPNG error:nil];
+                    if (previouslyOpenedFile) {
+                        // this file has been opened already
+                        newFileCache[filename] = previouslyOpenedFile;
+                        
+                        [self.files removeObject:previouslyOpenedFile];
+                        
+                        [newFiles addObject:previouslyOpenedFile];
                     } else {
-                        file = [self.filesystem openFile:info.path error:nil];
-                    }
-                    
-                    if (file) {
-                        __weak id weakFile = file;
-                        __weak id weakSelf = self;
+                        // this file is new since we last did a reload
+                        
+                        DBFile *file;
+                        DBError *error;
+                        DBPath *path = info.path;
+                        
+//                        if (info.thumbExists) {
+//                            file = [self.filesystem openThumbnail:path ofSize:DBThumbSizeL inFormat:DBThumbFormatPNG error:&error];
+//                        }
+//                        else {
+                            file = [self.filesystem openFile:path error:&error];
+//                        }
+                        
+                        if (error) {
+                            NSLog(@"%@", error);
+                        }
+                        
+                        newFileCache[filename] = file;
+                        
+                        __weak DBFile *weakFile = file;
+                        __weak typeof(self) weakSelf = self;
                         
                         [file addObserver:self block:^{
-                            [weakSelf reloadCellForFile:weakFile];
+                            DBError *error;
+                            if ([weakFile update:&error]) {
+                                [weakSelf reloadCellForFile:weakFile];
+                            } else if ([error dbErrorCode] == DBErrorNotFound) {
+                                // deleted!
+                            }
                         }];
                         
                         [newFiles addObject:file];
+                        
+                        [addedFiles addObject:file];
                     }
+                }];
+                
+                NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+                
+                // any of the remaining files have been deleted since we last reloaded
+                [self.files enumerateObjectsUsingBlock:^(DBFile *file, NSUInteger idx, BOOL *stop) {
+                    [indexPathsToDelete addObject:[self indexPathForFile:file]];
+                    
+                    [file removeObserver:self];
+                }];
+                
+                // set the new ordered set of files
+                self.files = newFiles;
+                self.fileCache = newFileCache;
+                
+                NSMutableArray *indexPathsToAdd = [NSMutableArray array];
+                
+                [addedFiles enumerateObjectsUsingBlock:^(DBFile *file, NSUInteger idx, BOOL *stop) {
+                    [indexPathsToAdd addObject:[self indexPathForFile:file]];
                 }];
                 
                 self.files = newFiles;
                 
-                [self.collectionView reloadData];
+                NSInteger addedCount = indexPathsToAdd.count;
+                NSInteger removedCount = indexPathsToDelete.count;
+                
+                // we want to make sure we only perform batch updates if we have to
+                if (addedCount > 0 || removedCount > 0) {
+                    [self.collectionView performBatchUpdates:^{
+                        if (addedCount > 0) {
+                            [self.collectionView insertItemsAtIndexPaths:indexPathsToAdd];
+                        }
+                        
+                        if (removedCount > 0) {
+                            [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
+                        }
+                    } completion:nil];
+                }
                 
                 self.loadingFiles = NO;
                 
@@ -157,7 +230,16 @@
 
 - (NSIndexPath *)indexPathForFile:(DBFile *)file
 {
-    NSInteger index = [self.files indexOfObject:file];
+    // since the files are sorted by modifiedTime we are able to perform a binary search to increase performance
+    NSInteger index = [self.files indexOfObject:file
+                                  inSortedRange:NSMakeRange(0, self.files.count)
+                                        options:NSBinarySearchingFirstEqual
+                                usingComparator:^NSComparisonResult(DBFile *obj1, DBFile *obj2) {
+                                    NSDate *date1 = obj1.info.modifiedTime;
+                                    NSDate *date2 = obj2.info.modifiedTime;
+                                    
+                                    return [date2 compare:date1];
+                                }];
     
     if (index != NSNotFound) {
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:index inSection:0];
@@ -190,22 +272,10 @@
     
     DBFile *file = self.files[indexPath.row];
     
-    DBFileStatus *fileStatus = file.status;
-    DBFileStatus *newerStatus = file.newerStatus;
+    ImageCellViewModel *viewModel = [[ImageCellViewModel alloc] initWithDBFile:file];
     
-    if (fileStatus.cached) {
-        cell.image = [UIImage imageWithData:[file readData:nil]];
-    }
-    
-    float progress = 0.0;
-    
-    if (fileStatus.state == DBFileStateDownloading || fileStatus.state == DBFileStateUploading) {
-        progress = fileStatus.progress;
-    } else if (newerStatus && newerStatus.state == DBFileStateDownloading) {
-        progress = newerStatus.progress;
-    }
-    
-    cell.progress = progress;
+    cell.image = viewModel.image;
+    cell.progress = viewModel.progress;
     
     return cell;
 }
@@ -240,12 +310,9 @@
         NSLog(@"%@", error);
     } else {
         if ([imageFile writeData:imageData error:&error]) {
-            [self.filesystem openFile:imagePath error:nil];
-            
-            [self.files insertObject:imageFile atIndex:0];
-            
             [picker dismissViewControllerAnimated:YES completion:^{
-                [self reloadCellForFile:imageFile];
+                // the file system observer block will get called
+                // so no need to manually call reloadFiles
             }];
         } else {
             NSLog(@"%@", error);

@@ -45,6 +45,7 @@ NSString *ImageCollectionViewCellIdentifier = @"ImageCollectionViewCellIdentifie
 {
     [self.imageView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
     
+    [self.progressView autoSetDimensionsToSize:CGSizeMake(44, 44)];
     [self.progressView autoCenterInSuperview];
 }
 
@@ -58,9 +59,9 @@ NSString *ImageCollectionViewCellIdentifier = @"ImageCollectionViewCellIdentifie
 
 - (void)setProgress:(float)progress
 {
-    if (progress >= 0 && progress <= 1) {
+    if (progress >= 0 && progress < 1) {
         self.progressView.hidden = NO;
-        self.progressView.progress = progress;
+        [self.progressView setProgress:progress animated:YES];
     } else {
         self.progressView.hidden = YES;
     }
@@ -93,7 +94,7 @@ NSString *ImageCollectionViewCellIdentifier = @"ImageCollectionViewCellIdentifie
     
     _progressView = [UAProgressView newAutoLayoutView];
     
-    [self.contentView addSubview:_progressView];
+    [self.contentView insertSubview:_progressView aboveSubview:self.imageView];
     
     return _progressView;
 }
