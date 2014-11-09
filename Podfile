@@ -7,6 +7,7 @@ target 'MobiPic' do
   pod 'UIImage-Resize', '~> 1.0'
   pod 'PureLayout', '~> 2.0'
   pod 'UAProgressView'
+  pod 'MHVideoPhotoGallery'
 end
 
 target 'MobiPicTests' do

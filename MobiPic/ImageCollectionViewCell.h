@@ -15,4 +15,6 @@ extern NSString *ImageCollectionViewCellIdentifier;
 @property (nonatomic) UIImage *image;
 @property (nonatomic) float progress;
 
+@property (nonatomic, strong, readonly) UIImageView *imageView;
+
 @end

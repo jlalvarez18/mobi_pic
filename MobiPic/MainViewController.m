@@ -10,11 +10,12 @@
 
 #import <Dropbox/Dropbox.h>
 #import <UIImage-Resize/UIImage+Resize.h>
+#import <MHVideoPhotoGallery/MHGallery.h>
 
 #import "ImageCollectionViewCell.h"
 #import "ImageCellViewModel.h"
 
-@interface MainViewController () <UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface MainViewController () <UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate, MHGalleryDataSource>
 
 @property (nonatomic, strong) DBFilesystem *filesystem;
 @property (nonatomic, strong) DBPath *root;
@@ -83,6 +84,145 @@
     }
 }
 
+#pragma mark -
+#pragma mark Action Methods
+
+- (IBAction)takePicture:(id)sender
+{
+    [self presentViewController:self.pickerController animated:YES completion:nil];
+}
+
+#pragma mark -
+#pragma mark UICollectionViewDatasource Methods
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return self.files.count;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:ImageCollectionViewCellIdentifier forIndexPath:indexPath];
+    
+    DBFile *file = self.files[indexPath.row];
+    
+    ImageCellViewModel *viewModel = [[ImageCellViewModel alloc] initWithDBFile:file];
+    
+    cell.image = viewModel.image;
+    cell.progress = viewModel.progress;
+    
+    return cell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    [collectionView deselectItemAtIndexPath:indexPath animated:YES];
+    
+    DBFile *file = self.files[indexPath.row];
+    
+    // only present the image if it is cached and ready to roll
+    if (file.status.cached) {
+        ImageCollectionViewCell *cell = (ImageCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+        
+        MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarHidden];
+        gallery.dataSource = self;
+        gallery.presentingFromImageView = cell.imageView;
+        gallery.presentationIndex = indexPath.row;
+        
+        MHUICustomization *customization = gallery.UICustomization;
+        customization.showOverView = NO;
+        customization.hideShare = YES;
+        
+        __weak typeof(self) weakSelf = self;
+        __weak MHGalleryController *weakGallery = gallery;
+        
+        gallery.finishedCallback = ^(NSUInteger currentIndex, UIImage *image, MHTransitionDismissMHGallery *interactiveTransition, MHGalleryViewMode viewMode) {
+            NSIndexPath *newIndexPath = [NSIndexPath indexPathForItem:currentIndex inSection:0];
+            
+            [weakSelf.collectionView scrollToItemAtIndexPath:newIndexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:NO];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // this makes sure the collectionView is ready to provide the new cell if it scrolled to a new position
+                [weakSelf.collectionView layoutIfNeeded];
+                
+                ImageCollectionViewCell *newCell = (ImageCollectionViewCell *)[weakSelf.collectionView cellForItemAtIndexPath:newIndexPath];
+                
+                [weakGallery dismissViewControllerAnimated:YES dismissImageView:newCell.imageView completion:nil];
+            });
+        };
+        
+        [self presentMHGalleryController:gallery animated:YES completion:nil];
+    }
+}
+
+#pragma mark -
+#pragma mark MHGalleryDataSource Methods
+
+- (NSInteger)numberOfItemsInGallery:(MHGalleryController*)galleryController
+{
+    return self.files.count;
+}
+
+- (MHGalleryItem*)itemForIndex:(NSInteger)index
+{
+    DBFile *file = self.files[index];
+    ImageCellViewModel *viewModel = [[ImageCellViewModel alloc] initWithDBFile:file];
+    
+    MHGalleryItem *item = [MHGalleryItem itemWithImage:viewModel.image];
+    
+    return item;
+}
+
+#pragma mark -
+#pragma mark UICollectionViewDelegateFlowLayout Methods
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return CGSizeMake(320, 320);
+}
+
+#pragma mark -
+#pragma mark UIImagePickerControllerDelegate Methods
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    // resize and compress image to save on size :)
+    UIImage *image = info[UIImagePickerControllerOriginalImage];
+    UIImage *resizedImage = [image resizedImageToFitInSize:CGSizeMake(640, 640) scaleIfSmaller:NO];
+    
+    NSData *imageData = UIImageJPEGRepresentation(resizedImage, 0.7);
+    
+    NSString *imageId = [NSUUID UUID].UUIDString;
+    NSString *imageName = [imageId stringByAppendingPathExtension:@"jpg"];
+    
+    NSError *error;
+    DBPath *imagePath = [[DBPath root] childPath:imageName];
+    DBFile *imageFile = [[DBFilesystem sharedFilesystem] createFile:imagePath error:&error];
+    
+    if (error) {
+        NSLog(@"%@", error);
+    } else {
+        if ([imageFile writeData:imageData error:&error]) {
+            [picker dismissViewControllerAnimated:YES completion:^{
+                // the file system observer block will get called
+                // so no need to manually call reloadFiles
+            }];
+        } else {
+            NSLog(@"%@", error);
+        }
+    }
+    
+    NSLog(@"%@", info);
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark -
+#pragma mark Private Methods
+
 - (void)reloadFiles
 {
     DBAccount *account = [[DBAccountManager sharedManager] linkedAccount];
@@ -108,7 +248,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSMutableOrderedSet *newFiles = [NSMutableOrderedSet orderedSet];
                 NSMutableDictionary *newFileCache = [NSMutableDictionary dictionary];
-
+                
                 NSMutableArray *addedFiles = [NSMutableArray array];
                 
                 [sortedFileInfos enumerateObjectsUsingBlock:^(DBFileInfo *info, NSUInteger idx, BOOL *stop) {
@@ -125,16 +265,8 @@
                     } else {
                         // this file is new since we last did a reload
                         
-                        DBFile *file;
                         DBError *error;
-                        DBPath *path = info.path;
-                        
-//                        if (info.thumbExists) {
-//                            file = [self.filesystem openThumbnail:path ofSize:DBThumbSizeL inFormat:DBThumbFormatPNG error:&error];
-//                        }
-//                        else {
-                            file = [self.filesystem openFile:path error:&error];
-//                        }
+                        DBFile *file = [self.filesystem openFile:info.path error:&error];
                         
                         if (error) {
                             NSLog(@"%@", error);
@@ -248,83 +380,6 @@
     }
     
     return nil;
-}
-
-#pragma mark -
-#pragma mark Action Methods
-
-- (IBAction)takePicture:(id)sender
-{
-    [self presentViewController:self.pickerController animated:YES completion:nil];
-}
-
-#pragma mark -
-#pragma mark UICollectionViewDatasource Methods
-
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
-    return self.files.count;
-}
-
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:ImageCollectionViewCellIdentifier forIndexPath:indexPath];
-    
-    DBFile *file = self.files[indexPath.row];
-    
-    ImageCellViewModel *viewModel = [[ImageCellViewModel alloc] initWithDBFile:file];
-    
-    cell.image = viewModel.image;
-    cell.progress = viewModel.progress;
-    
-    return cell;
-}
-
-#pragma mark -
-#pragma mark UICollectionViewDelegateFlowLayout Methods
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    return CGSizeMake(320, 320);
-}
-
-#pragma mark -
-#pragma mark UIImagePickerControllerDelegate Methods
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
-{
-    // resize and compress image to save on size :)
-    UIImage *image = info[UIImagePickerControllerOriginalImage];
-    UIImage *resizedImage = [image resizedImageToFitInSize:CGSizeMake(640, 640) scaleIfSmaller:NO];
-    
-    NSData *imageData = UIImageJPEGRepresentation(resizedImage, 0.7);
-    
-    NSString *imageId = [NSUUID UUID].UUIDString;
-    NSString *imageName = [imageId stringByAppendingPathExtension:@"jpg"];
-    
-    NSError *error;
-    DBPath *imagePath = [[DBPath root] childPath:imageName];
-    DBFile *imageFile = [[DBFilesystem sharedFilesystem] createFile:imagePath error:&error];
-    
-    if (error) {
-        NSLog(@"%@", error);
-    } else {
-        if ([imageFile writeData:imageData error:&error]) {
-            [picker dismissViewControllerAnimated:YES completion:^{
-                // the file system observer block will get called
-                // so no need to manually call reloadFiles
-            }];
-        } else {
-            NSLog(@"%@", error);
-        }
-    }
-    
-    NSLog(@"%@", info);
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-{
-    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark -
