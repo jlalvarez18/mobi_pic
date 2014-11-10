@@ -46,6 +46,8 @@ static NSString * const reuseIdentifier = @"Cell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sharePhoto:)];
+    
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.alwaysBounceVertical = YES;
     
@@ -64,6 +66,19 @@ static NSString * const reuseIdentifier = @"Cell";
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+}
+
+#pragma mark - Action Methods
+
+- (void)sharePhoto:(id)sender
+{
+    UIImage *image = [UIImage imageWithData:[self.file readData:nil]];
+    
+    if (image) {
+        UIActivityViewController *shareController = [[UIActivityViewController alloc] initWithActivityItems:@[image] applicationActivities:nil];
+        
+        [self presentViewController:shareController animated:YES completion:nil];
+    }
 }
 
 #pragma mark UICollectionViewDataSource
