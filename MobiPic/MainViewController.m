@@ -18,6 +18,7 @@
 #import "ImageCellViewModel.h"
 
 #import "DataManager.h"
+#import "PhotoModel.h"
 
 @interface MainViewController () <UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate, MHGalleryDataSource>
 
@@ -30,6 +31,8 @@
 @property (nonatomic, strong) NSMutableDictionary *fileCache;
 
 @property (nonatomic, strong) CLLocation *location;
+@property (nonatomic, strong) CLGeocoder *geocoder;
+@property (nonatomic, strong) NSString *cityLocation;
 
 @property (nonatomic) BOOL loadingFiles;
 @property (nonatomic) BOOL needToReloadFiles;
@@ -46,8 +49,9 @@
     
     self.files = [NSMutableOrderedSet orderedSet];
     self.fileCache = [NSMutableDictionary dictionary];
+    self.geocoder = [[CLGeocoder alloc] init];
     
-    [self.collectionView registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:ImageCollectionViewCellIdentifier];
+    [self.collectionView registerNib:[UINib nibWithNibName:@"ImageCollectionViewCell" bundle:nil] forCellWithReuseIdentifier:ImageCollectionViewCellIdentifier];
     
     __weak id weakself = self;
     [self.filesystem addObserver:self forPathAndChildren:self.root block:^{
@@ -71,20 +75,6 @@
             // we only want to call this once when view appears
             [self reloadFiles];
             
-            self.viewAppeared = YES;
-        }
-        
-        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-            self.navigationController.toolbarHidden = NO;
-            
-            [[INTULocationManager sharedInstance] requestLocationWithDesiredAccuracy:INTULocationAccuracyCity timeout:5.0 block:^(CLLocation *currentLocation, INTULocationAccuracy achievedAccuracy, INTULocationStatus status) {
-                 if (status == INTULocationStatusSuccess || status == INTULocationStatusTimedOut) {
-                     NSLog(@"%@", currentLocation);
-                     
-                     self.location = currentLocation;
-                 }
-             }];
-        } else {
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Camera Missing"
                                                                            message:@"This app is pretty boring without a camera :("
                                                                     preferredStyle:UIAlertControllerStyleAlert];
@@ -96,6 +86,28 @@
             [alert addAction:dismissAction];
             
             [self presentViewController:alert animated:YES completion:nil];
+            
+            self.viewAppeared = YES;
+        }
+        
+        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+            self.navigationController.toolbarHidden = NO;
+            
+            [[INTULocationManager sharedInstance] requestLocationWithDesiredAccuracy:INTULocationAccuracyCity timeout:5.0 block:^(CLLocation *currentLocation, INTULocationAccuracy achievedAccuracy, INTULocationStatus status) {
+                 if (status == INTULocationStatusSuccess || status == INTULocationStatusTimedOut) {
+                     NSLog(@"%@", currentLocation);
+                     
+                     self.location = currentLocation;
+                     
+                     [self.geocoder reverseGeocodeLocation:self.location completionHandler:^(NSArray *placemarks, NSError *error) {
+                         CLPlacemark *placemark = placemarks.firstObject;
+                         
+                         if (placemark) {
+                             self.cityLocation = placemark.locality;
+                         }
+                     }];
+                 }
+             }];
         }
     }
 }
@@ -190,14 +202,6 @@
 }
 
 #pragma mark -
-#pragma mark UICollectionViewDelegateFlowLayout Methods
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    return CGSizeMake(CGRectGetWidth(self.view.bounds), 320);
-}
-
-#pragma mark -
 #pragma mark UIImagePickerControllerDelegate Methods
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
@@ -223,7 +227,12 @@
         [SVProgressHUD show];
         
         if ([imageFile writeData:imageData error:&error]) {
-            [[DataManager sharedInstance] saveLocation:self.location toPath:imagePath];
+            PhotoModel *model = [PhotoModel new];
+            model.path = imagePath;
+            model.city = self.cityLocation;
+            model.location = self.location;
+            
+            [[DataManager sharedInstance] savePhoto:model];
             
             [SVProgressHUD dismiss];
             
@@ -244,11 +253,6 @@
 
 #pragma mark -
 #pragma mark Private Methods
-
-- (void)processFile:(DBFile *)file
-{
-    
-}
 
 - (void)reloadFiles
 {
@@ -294,7 +298,10 @@
                         // this file is new since we last did a reload
                         
                         DBError *error;
-                        DBFile *file = [self.filesystem openFile:info.path error:&error];
+                        DBFile *file = [self.filesystem openThumbnail:info.path
+                                                               ofSize:DBThumbSizeL
+                                                             inFormat:DBThumbFormatJPG
+                                                                error:&error];
                         
                         if (error) {
                             NSLog(@"%@", error);

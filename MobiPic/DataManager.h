@@ -10,12 +10,13 @@
 
 @class DBPath;
 @class CLLocation;
+@class PhotoModel;
 
 @interface DataManager : NSObject
 
 + (instancetype)sharedInstance;
 
-- (CLLocation *)locationForPath:(DBPath *)path;
-- (void)saveLocation:(CLLocation *)location toPath:(DBPath *)path;
+- (void)savePhoto:(PhotoModel *)model;
+- (PhotoModel *)modelForPath:(DBPath *)path;
 
 @end

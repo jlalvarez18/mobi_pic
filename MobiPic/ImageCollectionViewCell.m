@@ -11,12 +11,12 @@
 #import <PureLayout/PureLayout.h>
 #import <UAProgressView/UAProgressView.h>
 
-NSString *ImageCollectionViewCellIdentifier = @"ImageCollectionViewCellIdentifier";
+NSString *ImageCollectionViewCellIdentifier = @"ImageCollectionViewCell";
 
 @interface ImageCollectionViewCell ()
 
-@property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) UAProgressView *progressView;
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
+@property (weak, nonatomic) IBOutlet UAProgressView *progressView;
 
 @end
 
@@ -65,38 +65,6 @@ NSString *ImageCollectionViewCellIdentifier = @"ImageCollectionViewCellIdentifie
     } else {
         self.progressView.hidden = YES;
     }
-}
-
-#pragma mark -
-#pragma mark Views
-
-- (UIImageView *)imageView
-{
-    if (_imageView) {
-        return _imageView;
-    }
-    
-    _imageView = [UIImageView newAutoLayoutView];
-    _imageView.contentMode = UIViewContentModeScaleAspectFill;
-    _imageView.clipsToBounds = YES;
-    _imageView.backgroundColor = [UIColor lightGrayColor];
-    
-    [self.contentView addSubview:_imageView];
-    
-    return _imageView;
-}
-
-- (UAProgressView *)progressView
-{
-    if (_progressView) {
-        return _progressView;
-    }
-    
-    _progressView = [UAProgressView newAutoLayoutView];
-    
-    [self.contentView insertSubview:_progressView aboveSubview:self.imageView];
-    
-    return _progressView;
 }
 
 @end

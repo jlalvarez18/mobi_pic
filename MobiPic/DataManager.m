@@ -12,6 +12,8 @@
 
 @import CoreLocation;
 
+#import "PhotoModel.h"
+
 static NSString *kPhotosTableID = @"Photos";
 
 static NSString *kPhotoPathKey = @"path";
@@ -49,34 +51,11 @@ static NSString *kPhotoLongitudeKey = @"long";
     return self;
 }
 
-- (CLLocation *)locationForPath:(DBPath *)path
+- (void)savePhoto:(PhotoModel *)model
 {
-    DBRecord *record = [self recordForPath:path];
+    DBRecord *record = [self recordWithPath:model.path];
     
-    if (record) {
-        double latitude = [record[kPhotoLatitudeKey] doubleValue];
-        double longitude = [record[kPhotoLongitudeKey] doubleValue];
-        
-        CLLocation *location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
-        
-        return location;
-    }
-    
-    return nil;
-}
-
-- (void)saveLocation:(CLLocation *)location toPath:(DBPath *)path
-{
-    CLLocationCoordinate2D coordinate = location.coordinate;
-    
-    NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
-    attributes[kPhotoLatitudeKey] = @(coordinate.latitude);
-    attributes[kPhotoLongitudeKey] = @(coordinate.longitude);
-    attributes[kPhotoPathKey] = path.name;
-    
-    NSArray *results = [self.table query:@{ @"name": path.name } error:nil];
-    
-    DBRecord *record = results.firstObject;
+    NSDictionary *attributes = [model attributes];
     
     if (record) {
         [record setValuesForKeysWithDictionary:attributes];
@@ -87,11 +66,25 @@ static NSString *kPhotoLongitudeKey = @"long";
     [self.datastore sync:nil];
 }
 
+- (PhotoModel *)modelForPath:(DBPath *)path
+{
+    DBRecord *record = [self recordWithPath:path];
+    
+    PhotoModel *model = [PhotoModel modelForRecord:record];
+    
+    return model;
+}
+
 #pragma mark - Private
 
-- (DBRecord *)recordForPath:(DBPath *)path
+- (DBRecord *)recordWithPath:(DBPath *)path
 {
-    NSArray *results = [self.table query:@{ @"name": path.name } error:nil];
+    return [self recordWithPathName:path.name];
+}
+
+- (DBRecord *)recordWithPathName:(NSString *)pathName
+{
+    NSArray *results = [self.table query:@{ kPhotoPathNameKey: pathName } error:nil];
     
     return results.firstObject;
 }
