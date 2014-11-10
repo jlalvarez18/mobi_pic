@@ -104,7 +104,7 @@ static NSString * const reuseIdentifier = @"Cell";
         LabelCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:LabelCollectionViewCellIdentifier forIndexPath:indexPath];
         
         cell.placeholder = @"Enter description";
-        cell.text = self.model.city;
+        cell.text = self.model.descriptionText;
         cell.iconImage = [UIImage imageNamed:@"Info"];
         
         return cell;

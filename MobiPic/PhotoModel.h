@@ -19,6 +19,7 @@ extern NSString *const kPhotoPathNameKey;
 
 @property (nonatomic, strong) DBPath *path;
 @property (nonatomic, strong) NSString *city;
+@property (nonatomic, strong) NSString *descriptionText;
 @property (nonatomic, strong) CLLocation *location;
 
 + (PhotoModel *)modelForRecord:(DBRecord *)record;

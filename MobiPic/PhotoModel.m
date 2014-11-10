@@ -13,6 +13,7 @@
 
 NSString *const kPhotoPathNameKey = @"path_name";
 static NSString *kPhotoCityKey = @"city";
+static NSString *kPhotoDescriptionKey = @"description";
 static NSString *kPhotoLatitudeKey = @"lat";
 static NSString *kPhotoLongitudeKey = @"long";
 
@@ -32,6 +33,8 @@ static NSString *kPhotoLongitudeKey = @"long";
         model.location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
     }
     
+    model.descriptionText = record[kPhotoDescriptionKey];
+    
     return model;
 }
 
@@ -40,6 +43,7 @@ static NSString *kPhotoLongitudeKey = @"long";
     NSMutableDictionary *attr = [NSMutableDictionary dictionary];
     [attr setValue:self.path.name forKey:kPhotoPathNameKey];
     [attr setValue:self.city forKey:kPhotoCityKey];
+    [attr setValue:self.descriptionText forKey:kPhotoDescriptionKey];
     
     if (self.location) {
         CLLocationCoordinate2D coordinate = self.location.coordinate;
