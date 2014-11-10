@@ -10,6 +10,8 @@
 
 #import <Dropbox/Dropbox.h>
 #import <MHVideoPhotoGallery/MHGallery.h>
+#import <SVProgressHUD/SVProgressHUD.h>
+#import <AviarySDK/AviarySDK.h>
 
 #import "PhotoImageCell.h"
 #import "LabelCollectionViewCell.h"
@@ -19,7 +21,7 @@
 
 #import "DataManager.h"
 
-@interface PhotoDetailsViewController () <UICollectionViewDelegateFlowLayout>
+@interface PhotoDetailsViewController () <UICollectionViewDelegateFlowLayout, AFPhotoEditorControllerDelegate>
 
 @property (nonatomic, strong) DBPath *path;
 @property (nonatomic, strong) DBFile *file;
@@ -46,21 +48,13 @@ static NSString * const reuseIdentifier = @"Cell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sharePhoto:)];
-    
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.alwaysBounceVertical = YES;
     
     [self.collectionView registerNib:[UINib nibWithNibName:NSStringFromClass([PhotoImageCell class]) bundle:nil] forCellWithReuseIdentifier:PhotoImageCellIdentifier];
     [self.collectionView registerNib:[UINib nibWithNibName:NSStringFromClass([LabelCollectionViewCell class]) bundle:nil] forCellWithReuseIdentifier:LabelCollectionViewCellIdentifier];
     
-    DBError *error;
-    self.file = [[DBFilesystem sharedFilesystem] openFile:self.path error:&error];
-    self.model = [[DataManager sharedInstance] modelForPath:self.path];
-    
-    if (error) {
-        NSLog(@"%@", error);
-    }
+    [AFOpenGLManager beginOpenGLLoad];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -73,7 +67,50 @@ static NSString * const reuseIdentifier = @"Cell";
     [super viewWillAppear:animated];
 }
 
+- (void)reload
+{
+    [SVProgressHUD show];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        DBError *error;
+        self.file = [[DBFilesystem sharedFilesystem] openFile:self.path error:&error];
+        self.model = [[DataManager sharedInstance] modelForPath:self.path];
+        
+        if (error) {
+            NSLog(@"%@", error);
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+            
+            if (self.file) {
+                UIBarButtonItem *shareItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sharePhoto:)];
+                UIBarButtonItem *editItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editPhoto:)];
+                
+                self.navigationItem.rightBarButtonItems = @[shareItem, editItem];
+            }
+            
+            [self.collectionView reloadData];
+        });
+    });
+}
+
 #pragma mark - Action Methods
+
+- (void)editPhoto:(id)sender
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [AFPhotoEditorController setAPIKey:@"d9d5070450fd0c70" secret:@"a934f396c01b067b"];
+    });
+    
+    ImageCellViewModel *model = [[ImageCellViewModel alloc] initWithDBFile:self.file];
+    
+    AFPhotoEditorController *editorController = [[AFPhotoEditorController alloc] initWithImage:model.image];
+    editorController.delegate = self;
+    
+    [self presentViewController:editorController animated:YES completion:nil];
+}
 
 - (void)sharePhoto:(id)sender
 {
@@ -86,10 +123,30 @@ static NSString * const reuseIdentifier = @"Cell";
     }
 }
 
+#pragma mark -
+#pragma mark AFPhotoEditorControllerDelegate Methods
+
+- (void)photoEditor:(AFPhotoEditorController *)editor finishedWithImage:(UIImage *)image
+{
+    // Handle the result image here
+    NSLog(@"%@", image);
+    [editor dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)photoEditorCanceled:(AFPhotoEditorController *)editor
+{
+    // Handle cancellation here
+    [editor dismissViewControllerAnimated:YES completion:nil];
+}
+
 #pragma mark UICollectionViewDataSource
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return 3;
+    if (self.model && self.file) {
+        return 3;
+    }
+    
+    return 0;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {

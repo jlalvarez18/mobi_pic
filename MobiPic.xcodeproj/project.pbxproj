@@ -29,6 +29,17 @@
 		0D8DEB361A1106F900FB0C88 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D8DEB351A1106F900FB0C88 /* MapViewController.m */; };
 		0DDD71261A0FC7AF00C76295 /* ImageCellViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DDD71251A0FC7AF00C76295 /* ImageCellViewModel.m */; };
 		0DE0280E1A1124E600ACF265 /* MainDatasource.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE0280D1A1124E600ACF265 /* MainDatasource.m */; };
+		0DE028111A1131B000ACF265 /* AviarySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DE0280F1A1131B000ACF265 /* AviarySDK.framework */; };
+		0DE028121A1131B000ACF265 /* AviarySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0DE028101A1131B000ACF265 /* AviarySDKResources.bundle */; };
+		0DE028151A1131D200ACF265 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DE028131A1131D200ACF265 /* Accelerate.framework */; };
+		0DE028161A1131D200ACF265 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DE028141A1131D200ACF265 /* CoreData.framework */; };
+		0DE028181A1131DC00ACF265 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DE028171A1131DC00ACF265 /* libsqlite3.0.dylib */; };
+		0DE0281A1A1131E400ACF265 /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DE028191A1131E400ACF265 /* libz.1.2.5.dylib */; };
+		0DE0281C1A1131EC00ACF265 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DE0281B1A1131EC00ACF265 /* Foundation.framework */; };
+		0DE0281E1A1131F300ACF265 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DE0281D1A1131F300ACF265 /* MessageUI.framework */; };
+		0DE028201A1131FA00ACF265 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DE0281F1A1131FA00ACF265 /* OpenGLES.framework */; };
+		0DE028221A11320600ACF265 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DE028211A11320600ACF265 /* StoreKit.framework */; };
+		0DE028241A11320D00ACF265 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DE028231A11320D00ACF265 /* UIKit.framework */; };
 		0DE859D11A0E8F370065868B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D01A0E8F370065868B /* main.m */; };
 		0DE859D41A0E8F370065868B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D31A0E8F370065868B /* AppDelegate.m */; };
 		0DE859D71A0E8F370065868B /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D61A0E8F370065868B /* MainViewController.m */; };
@@ -82,6 +93,17 @@
 		0DDD71251A0FC7AF00C76295 /* ImageCellViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCellViewModel.m; sourceTree = "<group>"; };
 		0DE0280C1A1124E600ACF265 /* MainDatasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainDatasource.h; sourceTree = "<group>"; };
 		0DE0280D1A1124E600ACF265 /* MainDatasource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainDatasource.m; sourceTree = "<group>"; };
+		0DE0280F1A1131B000ACF265 /* AviarySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AviarySDK.framework; sourceTree = "<group>"; };
+		0DE028101A1131B000ACF265 /* AviarySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AviarySDKResources.bundle; sourceTree = "<group>"; };
+		0DE028131A1131D200ACF265 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		0DE028141A1131D200ACF265 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		0DE028171A1131DC00ACF265 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
+		0DE028191A1131E400ACF265 /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
+		0DE0281B1A1131EC00ACF265 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		0DE0281D1A1131F300ACF265 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		0DE0281F1A1131FA00ACF265 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		0DE028211A11320600ACF265 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		0DE028231A11320D00ACF265 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0DE859CB1A0E8F370065868B /* MobiPic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobiPic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DE859CF1A0E8F370065868B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0DE859D01A0E8F370065868B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -105,10 +127,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0DE028241A11320D00ACF265 /* UIKit.framework in Frameworks */,
+				0DE028221A11320600ACF265 /* StoreKit.framework in Frameworks */,
+				0D5DACF71A0E90AF005CE879 /* QuartzCore.framework in Frameworks */,
+				0DE028201A1131FA00ACF265 /* OpenGLES.framework in Frameworks */,
+				0DE0281E1A1131F300ACF265 /* MessageUI.framework in Frameworks */,
+				0DE0281C1A1131EC00ACF265 /* Foundation.framework in Frameworks */,
+				0DE0281A1A1131E400ACF265 /* libz.1.2.5.dylib in Frameworks */,
+				0DE028181A1131DC00ACF265 /* libsqlite3.0.dylib in Frameworks */,
+				0DE028151A1131D200ACF265 /* Accelerate.framework in Frameworks */,
+				0DE028161A1131D200ACF265 /* CoreData.framework in Frameworks */,
 				0D8DEB331A1106C800FB0C88 /* MapKit.framework in Frameworks */,
 				0D5DACFB1A0E90C9005CE879 /* libz.dylib in Frameworks */,
 				0D5DACF91A0E90C0005CE879 /* libc++.dylib in Frameworks */,
-				0D5DACF71A0E90AF005CE879 /* QuartzCore.framework in Frameworks */,
+				0DE028111A1131B000ACF265 /* AviarySDK.framework in Frameworks */,
 				0D5DACF51A0E90A9005CE879 /* SystemConfiguration.framework in Frameworks */,
 				0D5DACF31A0E90A2005CE879 /* Security.framework in Frameworks */,
 				0D5DACF11A0E909D005CE879 /* CFNetwork.framework in Frameworks */,
@@ -176,6 +208,8 @@
 		0D5DACED1A0E9063005CE879 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0DE0280F1A1131B000ACF265 /* AviarySDK.framework */,
+				0DE028101A1131B000ACF265 /* AviarySDKResources.bundle */,
 				0D5DACFA1A0E90C9005CE879 /* libz.dylib */,
 				0D5DACF81A0E90C0005CE879 /* libc++.dylib */,
 				0D5DACEE1A0E9070005CE879 /* Dropbox.framework */,
@@ -278,6 +312,15 @@
 		D5481CA8D0879DE48311E897 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0DE028231A11320D00ACF265 /* UIKit.framework */,
+				0DE028211A11320600ACF265 /* StoreKit.framework */,
+				0DE0281F1A1131FA00ACF265 /* OpenGLES.framework */,
+				0DE0281D1A1131F300ACF265 /* MessageUI.framework */,
+				0DE0281B1A1131EC00ACF265 /* Foundation.framework */,
+				0DE028191A1131E400ACF265 /* libz.1.2.5.dylib */,
+				0DE028171A1131DC00ACF265 /* libsqlite3.0.dylib */,
+				0DE028131A1131D200ACF265 /* Accelerate.framework */,
+				0DE028141A1131D200ACF265 /* CoreData.framework */,
 				0D8DEB321A1106C800FB0C88 /* MapKit.framework */,
 				A59F5EFA46335B42EB2D10BB /* libPods-MobiPic.a */,
 			);
@@ -377,6 +420,7 @@
 			files = (
 				0D5DAD001A0E9244005CE879 /* AuthViewController.xib in Resources */,
 				0DE859DA1A0E8F370065868B /* Main.storyboard in Resources */,
+				0DE028121A1131B000ACF265 /* AviarySDKResources.bundle in Resources */,
 				0DE859DF1A0E8F380065868B /* LaunchScreen.xib in Resources */,
 				0D0091F01A106F6A0012AD1D /* ThumbnailCollectionViewCell.xib in Resources */,
 				0D0091F81A1078870012AD1D /* PhotoImageCell.xib in Resources */,
