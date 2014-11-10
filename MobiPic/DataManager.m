@@ -84,7 +84,12 @@ static NSString *kPhotoLongitudeKey = @"long";
 
 - (DBRecord *)recordWithPathName:(NSString *)pathName
 {
-    NSArray *results = [self.table query:@{ kPhotoPathNameKey: pathName } error:nil];
+    DBError *error;
+    NSArray *results = [self.table query:@{ kPhotoPathNameKey: pathName } error:&error];
+    
+    if (error) {
+        NSLog(@"%@", error);
+    }
     
     return results.firstObject;
 }

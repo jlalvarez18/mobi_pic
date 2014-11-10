@@ -8,7 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		0D0091EB1A10664A0012AD1D /* PhotoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0091EA1A10664A0012AD1D /* PhotoModel.m */; };
-		0D0091F01A106F6A0012AD1D /* ImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D0091EF1A106F6A0012AD1D /* ImageCollectionViewCell.xib */; };
+		0D0091F01A106F6A0012AD1D /* ThumbnailCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D0091EF1A106F6A0012AD1D /* ThumbnailCollectionViewCell.xib */; };
+		0D0091F31A1076230012AD1D /* PhotoDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0091F21A1076230012AD1D /* PhotoDetailsViewController.m */; };
+		0D0091F81A1078870012AD1D /* PhotoImageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D0091F71A1078870012AD1D /* PhotoImageCell.xib */; };
+		0D0091FB1A1078DA0012AD1D /* PhotoImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0091FA1A1078DA0012AD1D /* PhotoImageCell.m */; };
+		0D0091FF1A1081890012AD1D /* LabelCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0091FD1A1081890012AD1D /* LabelCollectionViewCell.m */; };
+		0D0092001A1081890012AD1D /* LabelCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D0091FE1A1081890012AD1D /* LabelCollectionViewCell.xib */; };
 		0D5003C91A101E0A0083211E /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D5003C81A101E0A0083211E /* DataManager.m */; };
 		0D5DACEF1A0E9070005CE879 /* Dropbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D5DACEE1A0E9070005CE879 /* Dropbox.framework */; };
 		0D5DACF11A0E909D005CE879 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D5DACF01A0E909D005CE879 /* CFNetwork.framework */; };
@@ -19,7 +24,7 @@
 		0D5DACFB1A0E90C9005CE879 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D5DACFA1A0E90C9005CE879 /* libz.dylib */; };
 		0D5DACFF1A0E9244005CE879 /* AuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D5DACFD1A0E9244005CE879 /* AuthViewController.m */; };
 		0D5DAD001A0E9244005CE879 /* AuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D5DACFE1A0E9244005CE879 /* AuthViewController.xib */; };
-		0D7412B91A0EB79600A16970 /* ImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D7412B81A0EB79600A16970 /* ImageCollectionViewCell.m */; };
+		0D7412B91A0EB79600A16970 /* ThumbnailCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D7412B81A0EB79600A16970 /* ThumbnailCollectionViewCell.m */; };
 		0DDD71261A0FC7AF00C76295 /* ImageCellViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DDD71251A0FC7AF00C76295 /* ImageCellViewModel.m */; };
 		0DE859D11A0E8F370065868B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D01A0E8F370065868B /* main.m */; };
 		0DE859D41A0E8F370065868B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D31A0E8F370065868B /* AppDelegate.m */; };
@@ -44,7 +49,15 @@
 /* Begin PBXFileReference section */
 		0D0091E91A10664A0012AD1D /* PhotoModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoModel.h; sourceTree = "<group>"; };
 		0D0091EA1A10664A0012AD1D /* PhotoModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoModel.m; sourceTree = "<group>"; };
-		0D0091EF1A106F6A0012AD1D /* ImageCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageCollectionViewCell.xib; sourceTree = "<group>"; };
+		0D0091EF1A106F6A0012AD1D /* ThumbnailCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThumbnailCollectionViewCell.xib; sourceTree = "<group>"; };
+		0D0091F11A1076230012AD1D /* PhotoDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoDetailsViewController.h; sourceTree = "<group>"; };
+		0D0091F21A1076230012AD1D /* PhotoDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoDetailsViewController.m; sourceTree = "<group>"; };
+		0D0091F71A1078870012AD1D /* PhotoImageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PhotoImageCell.xib; sourceTree = "<group>"; };
+		0D0091F91A1078DA0012AD1D /* PhotoImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoImageCell.h; sourceTree = "<group>"; };
+		0D0091FA1A1078DA0012AD1D /* PhotoImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoImageCell.m; sourceTree = "<group>"; };
+		0D0091FC1A1081890012AD1D /* LabelCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LabelCollectionViewCell.h; sourceTree = "<group>"; };
+		0D0091FD1A1081890012AD1D /* LabelCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LabelCollectionViewCell.m; sourceTree = "<group>"; };
+		0D0091FE1A1081890012AD1D /* LabelCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LabelCollectionViewCell.xib; sourceTree = "<group>"; };
 		0D5003C71A101E0A0083211E /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
 		0D5003C81A101E0A0083211E /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
 		0D5DACEE1A0E9070005CE879 /* Dropbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Dropbox.framework; sourceTree = "<group>"; };
@@ -57,8 +70,8 @@
 		0D5DACFC1A0E9244005CE879 /* AuthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthViewController.h; sourceTree = "<group>"; };
 		0D5DACFD1A0E9244005CE879 /* AuthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthViewController.m; sourceTree = "<group>"; };
 		0D5DACFE1A0E9244005CE879 /* AuthViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AuthViewController.xib; sourceTree = "<group>"; };
-		0D7412B71A0EB79600A16970 /* ImageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCollectionViewCell.h; sourceTree = "<group>"; };
-		0D7412B81A0EB79600A16970 /* ImageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCollectionViewCell.m; sourceTree = "<group>"; };
+		0D7412B71A0EB79600A16970 /* ThumbnailCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailCollectionViewCell.h; sourceTree = "<group>"; };
+		0D7412B81A0EB79600A16970 /* ThumbnailCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbnailCollectionViewCell.m; sourceTree = "<group>"; };
 		0DDD71241A0FC7AF00C76295 /* ImageCellViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCellViewModel.h; sourceTree = "<group>"; };
 		0DDD71251A0FC7AF00C76295 /* ImageCellViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCellViewModel.m; sourceTree = "<group>"; };
 		0DE859CB1A0E8F370065868B /* MobiPic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobiPic.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -108,11 +121,9 @@
 		0D0091E71A1064D00012AD1D /* Cell */ = {
 			isa = PBXGroup;
 			children = (
-				0D7412B71A0EB79600A16970 /* ImageCollectionViewCell.h */,
-				0D7412B81A0EB79600A16970 /* ImageCollectionViewCell.m */,
-				0DDD71241A0FC7AF00C76295 /* ImageCellViewModel.h */,
-				0DDD71251A0FC7AF00C76295 /* ImageCellViewModel.m */,
-				0D0091EF1A106F6A0012AD1D /* ImageCollectionViewCell.xib */,
+				0D7412B71A0EB79600A16970 /* ThumbnailCollectionViewCell.h */,
+				0D7412B81A0EB79600A16970 /* ThumbnailCollectionViewCell.m */,
+				0D0091EF1A106F6A0012AD1D /* ThumbnailCollectionViewCell.xib */,
 			);
 			name = Cell;
 			sourceTree = "<group>";
@@ -126,6 +137,31 @@
 				0D0091EA1A10664A0012AD1D /* PhotoModel.m */,
 			);
 			name = Data;
+			sourceTree = "<group>";
+		};
+		0D0091F41A10763B0012AD1D /* Details */ = {
+			isa = PBXGroup;
+			children = (
+				0D0091F11A1076230012AD1D /* PhotoDetailsViewController.h */,
+				0D0091F21A1076230012AD1D /* PhotoDetailsViewController.m */,
+				0DDD71241A0FC7AF00C76295 /* ImageCellViewModel.h */,
+				0DDD71251A0FC7AF00C76295 /* ImageCellViewModel.m */,
+				0D0092011A1082740012AD1D /* Cells */,
+			);
+			name = Details;
+			sourceTree = "<group>";
+		};
+		0D0092011A1082740012AD1D /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				0D0091F91A1078DA0012AD1D /* PhotoImageCell.h */,
+				0D0091FA1A1078DA0012AD1D /* PhotoImageCell.m */,
+				0D0091F71A1078870012AD1D /* PhotoImageCell.xib */,
+				0D0091FC1A1081890012AD1D /* LabelCollectionViewCell.h */,
+				0D0091FD1A1081890012AD1D /* LabelCollectionViewCell.m */,
+				0D0091FE1A1081890012AD1D /* LabelCollectionViewCell.xib */,
+			);
+			name = Cells;
 			sourceTree = "<group>";
 		};
 		0D5DACED1A0E9063005CE879 /* Frameworks */ = {
@@ -191,6 +227,7 @@
 				0D0091E81A10663F0012AD1D /* Data */,
 				0D5DAD021A0E9B18005CE879 /* Auth */,
 				0D5DAD031A0E9B1D005CE879 /* Main */,
+				0D0091F41A10763B0012AD1D /* Details */,
 				0DE859DB1A0E8F370065868B /* Images.xcassets */,
 				0DE859DD1A0E8F380065868B /* LaunchScreen.xib */,
 				0D5DACED1A0E9063005CE879 /* Frameworks */,
@@ -327,8 +364,10 @@
 				0D5DAD001A0E9244005CE879 /* AuthViewController.xib in Resources */,
 				0DE859DA1A0E8F370065868B /* Main.storyboard in Resources */,
 				0DE859DF1A0E8F380065868B /* LaunchScreen.xib in Resources */,
-				0D0091F01A106F6A0012AD1D /* ImageCollectionViewCell.xib in Resources */,
+				0D0091F01A106F6A0012AD1D /* ThumbnailCollectionViewCell.xib in Resources */,
+				0D0091F81A1078870012AD1D /* PhotoImageCell.xib in Resources */,
 				0DE859DC1A0E8F370065868B /* Images.xcassets in Resources */,
+				0D0092001A1081890012AD1D /* LabelCollectionViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,12 +420,15 @@
 			files = (
 				0D5DACFF1A0E9244005CE879 /* AuthViewController.m in Sources */,
 				0DE859D71A0E8F370065868B /* MainViewController.m in Sources */,
+				0D0091F31A1076230012AD1D /* PhotoDetailsViewController.m in Sources */,
 				0D0091EB1A10664A0012AD1D /* PhotoModel.m in Sources */,
 				0D5003C91A101E0A0083211E /* DataManager.m in Sources */,
 				0DDD71261A0FC7AF00C76295 /* ImageCellViewModel.m in Sources */,
-				0D7412B91A0EB79600A16970 /* ImageCollectionViewCell.m in Sources */,
+				0D7412B91A0EB79600A16970 /* ThumbnailCollectionViewCell.m in Sources */,
 				0DE859D41A0E8F370065868B /* AppDelegate.m in Sources */,
+				0D0091FB1A1078DA0012AD1D /* PhotoImageCell.m in Sources */,
 				0DE859D11A0E8F370065868B /* main.m in Sources */,
+				0D0091FF1A1081890012AD1D /* LabelCollectionViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

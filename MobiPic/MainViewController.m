@@ -10,17 +10,18 @@
 
 #import <Dropbox/Dropbox.h>
 #import <UIImage-Resize/UIImage+Resize.h>
-#import <MHVideoPhotoGallery/MHGallery.h>
 #import <INTULocationManager/INTULocationManager.h>
 #import <SVProgressHUD/SVProgressHUD.h>
 
-#import "ImageCollectionViewCell.h"
+#import "ThumbnailCollectionViewCell.h"
 #import "ImageCellViewModel.h"
 
 #import "DataManager.h"
 #import "PhotoModel.h"
 
-@interface MainViewController () <UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate, MHGalleryDataSource>
+#import "PhotoDetailsViewController.h"
+
+@interface MainViewController () <UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic, strong) DBFilesystem *filesystem;
 @property (nonatomic, strong) DBPath *root;
@@ -51,7 +52,7 @@
     self.fileCache = [NSMutableDictionary dictionary];
     self.geocoder = [[CLGeocoder alloc] init];
     
-    [self.collectionView registerNib:[UINib nibWithNibName:@"ImageCollectionViewCell" bundle:nil] forCellWithReuseIdentifier:ImageCollectionViewCellIdentifier];
+    [self.collectionView registerNib:[UINib nibWithNibName:@"ThumbnailCollectionViewCell" bundle:nil] forCellWithReuseIdentifier:ThumbnailCollectionViewCellIdentifier];
     
     __weak id weakself = self;
     [self.filesystem addObserver:self forPathAndChildren:self.root block:^{
@@ -75,17 +76,19 @@
             // we only want to call this once when view appears
             [self reloadFiles];
             
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Camera Missing"
-                                                                           message:@"This app is pretty boring without a camera :("
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
-            
-            UIAlertAction *dismissAction = [UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                [alert dismissViewControllerAnimated:YES completion:nil];
-            }];
-            
-            [alert addAction:dismissAction];
-            
-            [self presentViewController:alert animated:YES completion:nil];
+            if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Camera Missing"
+                                                                               message:@"This app is pretty boring without a camera :("
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                
+                UIAlertAction *dismissAction = [UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                    [alert dismissViewControllerAnimated:YES completion:nil];
+                }];
+                
+                [alert addAction:dismissAction];
+                
+                [self presentViewController:alert animated:YES completion:nil];
+            }
             
             self.viewAppeared = YES;
         }
@@ -130,14 +133,13 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:ImageCollectionViewCellIdentifier forIndexPath:indexPath];
+    ThumbnailCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:ThumbnailCollectionViewCellIdentifier forIndexPath:indexPath];
     
     DBFile *file = self.files[indexPath.row];
     
     ImageCellViewModel *viewModel = [[ImageCellViewModel alloc] initWithDBFile:file];
     
     cell.image = viewModel.image;
-    cell.progress = viewModel.progress;
     
     return cell;
 }
@@ -148,57 +150,9 @@
     
     DBFile *file = self.files[indexPath.row];
     
-    // only present the image if it is cached and ready to roll
-    if (file.status.cached) {
-        ImageCollectionViewCell *cell = (ImageCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
-        
-        MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarHidden];
-        gallery.dataSource = self;
-        gallery.presentingFromImageView = cell.imageView;
-        gallery.presentationIndex = indexPath.row;
-        
-        MHUICustomization *customization = gallery.UICustomization;
-        customization.showOverView = NO;
-        customization.hideShare = YES;
-        
-        __weak typeof(self) weakSelf = self;
-        __weak MHGalleryController *weakGallery = gallery;
-        
-        gallery.finishedCallback = ^(NSUInteger currentIndex, UIImage *image, MHTransitionDismissMHGallery *interactiveTransition, MHGalleryViewMode viewMode) {
-            NSIndexPath *newIndexPath = [NSIndexPath indexPathForItem:currentIndex inSection:0];
-            
-            [weakSelf.collectionView scrollToItemAtIndexPath:newIndexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:NO];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                // this makes sure the collectionView is ready to provide the new cell if it scrolled to a new position
-                [weakSelf.collectionView layoutIfNeeded];
-                
-                ImageCollectionViewCell *newCell = (ImageCollectionViewCell *)[weakSelf.collectionView cellForItemAtIndexPath:newIndexPath];
-                
-                [weakGallery dismissViewControllerAnimated:YES dismissImageView:newCell.imageView completion:nil];
-            });
-        };
-        
-        [self presentMHGalleryController:gallery animated:YES completion:nil];
-    }
-}
-
-#pragma mark -
-#pragma mark MHGalleryDataSource Methods
-
-- (NSInteger)numberOfItemsInGallery:(MHGalleryController *)galleryController
-{
-    return self.files.count;
-}
-
-- (MHGalleryItem *)itemForIndex:(NSInteger)index
-{
-    DBFile *file = self.files[index];
-    ImageCellViewModel *viewModel = [[ImageCellViewModel alloc] initWithDBFile:file];
+    PhotoDetailsViewController *controller = [[PhotoDetailsViewController alloc] initWithPath:file.info.path];
     
-    MHGalleryItem *item = [MHGalleryItem itemWithImage:viewModel.image];
-    
-    return item;
+    [self.navigationController pushViewController:controller animated:YES];
 }
 
 #pragma mark -

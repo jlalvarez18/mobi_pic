@@ -1,37 +1,25 @@
 //
-//  ImageCollectionViewCell.m
+//  PhotoImageCell.m
 //  MobiPic
 //
-//  Created by Juan Alvarez on 11/8/14.
+//  Created by Juan Alvarez on 11/9/14.
 //  Copyright (c) 2014 Alvarez Productions. All rights reserved.
 //
 
-#import "ImageCollectionViewCell.h"
+#import "PhotoImageCell.h"
 
-#import <PureLayout/PureLayout.h>
 #import <UAProgressView/UAProgressView.h>
 
-NSString *ImageCollectionViewCellIdentifier = @"ImageCollectionViewCell";
+NSString *const PhotoImageCellIdentifier = @"PhotoImageCell";
 
-@interface ImageCollectionViewCell ()
+@interface PhotoImageCell ()
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UAProgressView *progressView;
 
 @end
 
-@implementation ImageCollectionViewCell
-
-- (instancetype)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    
-    self.backgroundColor = [UIColor whiteColor];
-    
-    [self defineConstraints];
-    
-    return self;
-}
+@implementation PhotoImageCell
 
 - (void)prepareForReuse
 {
@@ -39,14 +27,6 @@ NSString *ImageCollectionViewCellIdentifier = @"ImageCollectionViewCell";
     
     self.progressView.hidden = NO;
     self.progressView.progress = 0.0;
-}
-
-- (void)defineConstraints
-{
-    [self.imageView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
-    
-    [self.progressView autoSetDimensionsToSize:CGSizeMake(44, 44)];
-    [self.progressView autoCenterInSuperview];
 }
 
 #pragma mark -
