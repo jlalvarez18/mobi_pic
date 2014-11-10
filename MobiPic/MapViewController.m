@@ -10,6 +10,8 @@
 
 #import "DataManager.h"
 #import "PhotoModel.h"
+#import "PhotoDetailsViewController.h"
+
 #import <Dropbox/Dropbox.h>
 
 @import MapKit;
@@ -19,6 +21,7 @@
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 
 @property (nonatomic, strong) NSArray *items;
+@property (nonatomic, assign) BOOL viewLoaded;
 
 @end
 
@@ -27,6 +30,7 @@
 - (void)awakeFromNib
 {
     self.title = NSLocalizedString(@"Map", nil);
+    self.tabBarItem.image = [UIImage imageNamed:@"Compass"];
 }
 
 - (void)viewDidLoad {
@@ -44,21 +48,27 @@
 {
     [super viewWillAppear:animated];
     
-    self.items = [[DataManager sharedInstance] getAllPhotoModels];
-    
-//    DBFilesystem *fileSystem = [DBFilesystem sharedFilesystem];
-//    
-//    [self.items enumerateObjectsUsingBlock:^(PhotoModel *model, NSUInteger idx, BOOL *stop) {
-//        model.thumbnailFile;
-//    }];
-    
-    [self.mapView addAnnotations:self.items];
-    [self.mapView showAnnotations:self.items animated:YES];
+    if (!self.viewLoaded) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSArray *items = [[DataManager sharedInstance] getAllPhotoModels];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.items = items;
+                
+                [self.mapView addAnnotations:self.items];
+            });
+        });
+        
+        self.viewLoaded = YES;
+    }
 }
 
-- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation
+#pragma mark -
+#pragma mark MKMapViewDelegate Methods
+
+- (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views
 {
-    [mapView setCenterCoordinate:userLocation.coordinate animated:YES];
+    [self.mapView showAnnotations:self.items animated:YES];
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
@@ -81,7 +91,9 @@
     view.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeInfoDark];
     
     PhotoModel *model = annotation;
-    UIImage *image = [UIImage imageWithData:[model.thumbnailFile readData:nil]];
+    DBFile *thumbnailFile = [model thumbnailFileForSize:DBThumbSizeS];
+    UIImage *image = [UIImage imageWithData:[thumbnailFile readData:nil]];
+    
     view.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:image];
     
     return view;
@@ -89,7 +101,20 @@
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
 {
-    NSLog(@"Tapped");
+    PhotoModel *model = view.annotation;
+    
+    PhotoDetailsViewController *detailsController = [[PhotoDetailsViewController alloc] initWithPath:model.path];
+    
+    [self.navigationController pushViewController:detailsController animated:YES];
 }
+
+//- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
+//{
+//    PhotoModel *model = view.annotation;
+//    
+//    PhotoDetailsViewController *detailsController = [[PhotoDetailsViewController alloc] initWithPath:model.path];
+//    
+//    [self.navigationController pushViewController:detailsController animated:YES];
+//}
 
 @end

@@ -54,8 +54,13 @@ static NSString * const reuseIdentifier = @"Cell";
     [self.collectionView registerNib:[UINib nibWithNibName:NSStringFromClass([PhotoImageCell class]) bundle:nil] forCellWithReuseIdentifier:PhotoImageCellIdentifier];
     [self.collectionView registerNib:[UINib nibWithNibName:NSStringFromClass([LabelCollectionViewCell class]) bundle:nil] forCellWithReuseIdentifier:LabelCollectionViewCellIdentifier];
     
-    self.file = [[DBFilesystem sharedFilesystem] openFile:self.path error:nil];
+    DBError *error;
+    self.file = [[DBFilesystem sharedFilesystem] openFile:self.path error:&error];
     self.model = [[DataManager sharedInstance] modelForPath:self.path];
+    
+    if (error) {
+        NSLog(@"%@", error);
+    }
 }
 
 - (void)didReceiveMemoryWarning {

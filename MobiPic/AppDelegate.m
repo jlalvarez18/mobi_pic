@@ -23,6 +23,8 @@
 @synthesize authController = _authController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    self.window.backgroundColor = [UIColor whiteColor];
+    
     [self setupDropboxManager];
     
     return YES;

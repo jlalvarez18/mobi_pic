@@ -18,10 +18,24 @@ static NSString *kPhotoDescriptionKey = @"description";
 static NSString *kPhotoLatitudeKey = @"lat";
 static NSString *kPhotoLongitudeKey = @"long";
 
+@interface PhotoModel ()
+
+@property (nonatomic, strong) NSMutableDictionary *thumbnails;
+
+@end
+
 @implementation PhotoModel
 
 @synthesize file = _file;
-@synthesize thumbnailFile = _thumbnailFile;
+
+- (instancetype)init
+{
+    self = [super init];
+    
+    self.thumbnails = [NSMutableDictionary dictionary];
+    
+    return self;
+}
 
 + (PhotoModel *)modelForRecord:(DBRecord *)record
 {
@@ -64,6 +78,15 @@ static NSString *kPhotoLongitudeKey = @"long";
     return self.location.coordinate;
 }
 
+- (NSString *)title
+{
+    if (self.city) {
+        return self.city;
+    }
+    
+    return @"Unknown Location";
+}
+
 - (DBFile *)file
 {
     if (_file) {
@@ -75,15 +98,19 @@ static NSString *kPhotoLongitudeKey = @"long";
     return _file;
 }
 
-- (DBFile *)thumbnailFile
+- (DBFile *)thumbnailFileForSize:(DBThumbSize)size
 {
-    if (_thumbnailFile) {
-        return _thumbnailFile;
+    DBFile *file = self.thumbnails[@(size)];
+    
+    if (!file) {
+        file = [[DBFilesystem sharedFilesystem] openThumbnail:self.path ofSize:size inFormat:DBThumbFormatJPG error:nil];
+        
+        if (file) {
+            self.thumbnails[@(size)] = file;
+        }
     }
     
-    _thumbnailFile = [[DBFilesystem sharedFilesystem] openThumbnail:self.path ofSize:DBThumbSizeM inFormat:DBThumbFormatJPG error:nil];
-    
-    return _thumbnailFile;
+    return file;
 }
 
 @end

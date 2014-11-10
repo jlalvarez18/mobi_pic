@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import <Dropbox/DBFilesystem.h>
+
 @import MapKit.MKAnnotation;
 
 @class CLLocation;
@@ -25,12 +27,14 @@ extern NSString *const kPhotoPathNameKey;
 @property (nonatomic, strong) CLLocation *location;
 
 @property (nonatomic, strong, readonly) DBFile *file;
-@property (nonatomic, strong, readonly) DBFile *thumbnailFile;
 
 @property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
+@property (nonatomic, readonly) NSString *title;
 
 + (PhotoModel *)modelForRecord:(DBRecord *)record;
 
 - (NSDictionary *)attributes;
+
+- (DBFile *)thumbnailFileForSize:(DBThumbSize)size;
 
 @end

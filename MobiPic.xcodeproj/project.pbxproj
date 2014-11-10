@@ -28,6 +28,7 @@
 		0D8DEB331A1106C800FB0C88 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D8DEB321A1106C800FB0C88 /* MapKit.framework */; };
 		0D8DEB361A1106F900FB0C88 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D8DEB351A1106F900FB0C88 /* MapViewController.m */; };
 		0DDD71261A0FC7AF00C76295 /* ImageCellViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DDD71251A0FC7AF00C76295 /* ImageCellViewModel.m */; };
+		0DE0280E1A1124E600ACF265 /* MainDatasource.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE0280D1A1124E600ACF265 /* MainDatasource.m */; };
 		0DE859D11A0E8F370065868B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D01A0E8F370065868B /* main.m */; };
 		0DE859D41A0E8F370065868B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D31A0E8F370065868B /* AppDelegate.m */; };
 		0DE859D71A0E8F370065868B /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D61A0E8F370065868B /* MainViewController.m */; };
@@ -79,6 +80,8 @@
 		0D8DEB351A1106F900FB0C88 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
 		0DDD71241A0FC7AF00C76295 /* ImageCellViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCellViewModel.h; sourceTree = "<group>"; };
 		0DDD71251A0FC7AF00C76295 /* ImageCellViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCellViewModel.m; sourceTree = "<group>"; };
+		0DE0280C1A1124E600ACF265 /* MainDatasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainDatasource.h; sourceTree = "<group>"; };
+		0DE0280D1A1124E600ACF265 /* MainDatasource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainDatasource.m; sourceTree = "<group>"; };
 		0DE859CB1A0E8F370065868B /* MobiPic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobiPic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DE859CF1A0E8F370065868B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0DE859D01A0E8F370065868B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -199,6 +202,8 @@
 			children = (
 				0DE859D51A0E8F370065868B /* MainViewController.h */,
 				0DE859D61A0E8F370065868B /* MainViewController.m */,
+				0DE0280C1A1124E600ACF265 /* MainDatasource.h */,
+				0DE0280D1A1124E600ACF265 /* MainDatasource.m */,
 				0D8DEB341A1106F900FB0C88 /* MapViewController.h */,
 				0D8DEB351A1106F900FB0C88 /* MapViewController.m */,
 				0DE859D81A0E8F370065868B /* Main.storyboard */,
@@ -439,6 +444,7 @@
 				0D0091FB1A1078DA0012AD1D /* PhotoImageCell.m in Sources */,
 				0DE859D11A0E8F370065868B /* main.m in Sources */,
 				0D0091FF1A1081890012AD1D /* LabelCollectionViewCell.m in Sources */,
+				0DE0280E1A1124E600ACF265 /* MainDatasource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

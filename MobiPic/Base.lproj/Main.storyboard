@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Jii-pU-cHk">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6249" systemVersion="14A388a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Jii-pU-cHk">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6243"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -25,17 +25,8 @@
                             <outlet property="delegate" destination="2sK-ee-LO1" id="BA1-Mb-JLt"/>
                         </connections>
                     </collectionView>
-                    <toolbarItems>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="i2L-rZ-LDJ"/>
-                        <barButtonItem title="Take Picture" id="adt-Lo-1lT">
-                            <connections>
-                                <action selector="takePicture:" destination="2sK-ee-LO1" id="Lb2-uK-3cI"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="qvt-i4-Pb9"/>
-                    </toolbarItems>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" id="fhX-vN-7p3"/>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="L64-ot-hRF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -60,7 +51,7 @@
             </objects>
             <point key="canvasLocation" x="1156" y="432"/>
         </scene>
-        <!--Item-->
+        <!--Map View Controller-->
         <scene sceneID="l4w-Wd-4gh">
             <objects>
                 <viewController id="Ate-8u-qWn" customClass="MapViewController" sceneMemberID="viewController">
@@ -72,26 +63,32 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="TTc-2Q-Aoi">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TTc-2Q-Aoi">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="TTc-2Q-Aoi" firstAttribute="bottom" secondItem="Hc6-i9-5iA" secondAttribute="bottomMargin" id="2XP-EQ-gn5"/>
                             <constraint firstItem="TTc-2Q-Aoi" firstAttribute="leading" secondItem="Hc6-i9-5iA" secondAttribute="leadingMargin" constant="-16" id="9Yy-cK-bob"/>
                             <constraint firstItem="JPJ-do-fd3" firstAttribute="top" secondItem="TTc-2Q-Aoi" secondAttribute="bottom" id="DBO-C2-zqS"/>
                             <constraint firstAttribute="trailingMargin" secondItem="TTc-2Q-Aoi" secondAttribute="trailing" constant="-16" id="uxd-XI-NGd"/>
                             <constraint firstItem="TTc-2Q-Aoi" firstAttribute="top" secondItem="Hc6-i9-5iA" secondAttribute="topMargin" id="wqP-na-QTs"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="DBO-C2-zqS"/>
+                            </mask>
+                        </variation>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" id="3Bq-gJ-vHE"/>
+                    <navigationItem key="navigationItem" id="M0O-br-oWm"/>
                     <connections>
                         <outlet property="mapView" destination="TTc-2Q-Aoi" id="1nN-HS-E5w"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="m8t-WD-5SA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1968" y="1112"/>
+            <point key="canvasLocation" x="1968" y="1130"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="md8-5k-esH">
@@ -105,12 +102,31 @@
                     </tabBar>
                     <connections>
                         <segue destination="HXo-Bk-e3C" kind="relationship" relationship="viewControllers" id="yb3-py-2HR"/>
-                        <segue destination="Ate-8u-qWn" kind="relationship" relationship="viewControllers" id="IAZ-JI-5sW"/>
+                        <segue destination="tsM-so-mR3" kind="relationship" relationship="viewControllers" id="IAZ-JI-5sW"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1zG-Fp-VxU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="344" y="772"/>
+        </scene>
+        <!--Item-->
+        <scene sceneID="fQS-9H-ZcG">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="tsM-so-mR3" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="3Bq-gJ-vHE"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="uiK-oq-dsg">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Ate-8u-qWn" kind="relationship" relationship="rootViewController" id="4ez-3Q-Bv5"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PYb-Jc-eqx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1156" y="1130"/>
         </scene>
     </scenes>
 </document>
