@@ -95,6 +95,9 @@
     if (account) {
         DBFilesystem *fileSystem = [[DBFilesystem alloc] initWithAccount:account];
         [DBFilesystem setSharedFilesystem:fileSystem];
+        
+        DBDatastoreManager *dbManager = [DBDatastoreManager managerForAccount:account];
+        [DBDatastoreManager setSharedManager:dbManager];
     }
 }
 

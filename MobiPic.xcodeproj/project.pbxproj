@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D5003C91A101E0A0083211E /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D5003C81A101E0A0083211E /* DataManager.m */; };
 		0D5DACEF1A0E9070005CE879 /* Dropbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D5DACEE1A0E9070005CE879 /* Dropbox.framework */; };
 		0D5DACF11A0E909D005CE879 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D5DACF01A0E909D005CE879 /* CFNetwork.framework */; };
 		0D5DACF31A0E90A2005CE879 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D5DACF21A0E90A2005CE879 /* Security.framework */; };
@@ -39,6 +40,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0D5003C71A101E0A0083211E /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
+		0D5003C81A101E0A0083211E /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
 		0D5DACEE1A0E9070005CE879 /* Dropbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Dropbox.framework; sourceTree = "<group>"; };
 		0D5DACF01A0E909D005CE879 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		0D5DACF21A0E90A2005CE879 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -131,6 +134,8 @@
 				0D7412B81A0EB79600A16970 /* ImageCollectionViewCell.m */,
 				0DDD71241A0FC7AF00C76295 /* ImageCellViewModel.h */,
 				0DDD71251A0FC7AF00C76295 /* ImageCellViewModel.m */,
+				0D5003C71A101E0A0083211E /* DataManager.h */,
+				0D5003C81A101E0A0083211E /* DataManager.m */,
 			);
 			name = Main;
 			sourceTree = "<group>";
@@ -351,6 +356,7 @@
 			files = (
 				0D5DACFF1A0E9244005CE879 /* AuthViewController.m in Sources */,
 				0DE859D71A0E8F370065868B /* MainViewController.m in Sources */,
+				0D5003C91A101E0A0083211E /* DataManager.m in Sources */,
 				0DDD71261A0FC7AF00C76295 /* ImageCellViewModel.m in Sources */,
 				0D7412B91A0EB79600A16970 /* ImageCollectionViewCell.m in Sources */,
 				0DE859D41A0E8F370065868B /* AppDelegate.m in Sources */,

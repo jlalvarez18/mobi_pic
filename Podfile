@@ -8,6 +8,9 @@ target 'MobiPic' do
   pod 'PureLayout', '~> 2.0'
   pod 'UAProgressView'
   pod 'MHVideoPhotoGallery'
+  pod 'INTULocationManager'
+  pod 'SVProgressHUD'
+  pod 'BlocksKit', '~> 2.2'
 end
 
 target 'MobiPicTests' do

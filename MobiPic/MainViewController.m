@@ -11,9 +11,13 @@
 #import <Dropbox/Dropbox.h>
 #import <UIImage-Resize/UIImage+Resize.h>
 #import <MHVideoPhotoGallery/MHGallery.h>
+#import <INTULocationManager/INTULocationManager.h>
+#import <SVProgressHUD/SVProgressHUD.h>
 
 #import "ImageCollectionViewCell.h"
 #import "ImageCellViewModel.h"
+
+#import "DataManager.h"
 
 @interface MainViewController () <UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate, MHGalleryDataSource>
 
@@ -24,6 +28,8 @@
 
 @property (nonatomic, strong) NSMutableOrderedSet *files;
 @property (nonatomic, strong) NSMutableDictionary *fileCache;
+
+@property (nonatomic, strong) CLLocation *location;
 
 @property (nonatomic) BOOL loadingFiles;
 @property (nonatomic) BOOL needToReloadFiles;
@@ -58,29 +64,39 @@
 {
     [super viewWillAppear:animated];
     
-    if (!self.viewAppeared) {
-        // we only want to call this once when view appears
-        [self reloadFiles];
-        
-        self.viewAppeared = YES;
-    }
+    DBAccount *account = [[DBAccountManager sharedManager] linkedAccount];
     
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        self.navigationController.toolbarHidden = NO;
-    } else {
-//        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Camera Missing"
-//                                                                       message:@"This app is pretty boring without a camera :("
-//                                                                preferredStyle:UIAlertControllerStyleAlert];
-//        
-//        UIAlertAction *dismissAction = [UIAlertAction actionWithTitle:@"Dismiss"
-//                                                                style:UIAlertActionStyleDefault
-//                                                              handler:^(UIAlertAction *action) {
-//                                                                  [alert dismissViewControllerAnimated:YES completion:nil];
-//                                                              }];
-//
-//        [alert addAction:dismissAction];
-//        
-//        [self presentViewController:alert animated:YES completion:nil];
+    if (account) {
+        if (!self.viewAppeared) {
+            // we only want to call this once when view appears
+            [self reloadFiles];
+            
+            self.viewAppeared = YES;
+        }
+        
+        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+            self.navigationController.toolbarHidden = NO;
+            
+            [[INTULocationManager sharedInstance] requestLocationWithDesiredAccuracy:INTULocationAccuracyCity timeout:5.0 block:^(CLLocation *currentLocation, INTULocationAccuracy achievedAccuracy, INTULocationStatus status) {
+                 if (status == INTULocationStatusSuccess || status == INTULocationStatusTimedOut) {
+                     NSLog(@"%@", currentLocation);
+                     
+                     self.location = currentLocation;
+                 }
+             }];
+        } else {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Camera Missing"
+                                                                           message:@"This app is pretty boring without a camera :("
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction *dismissAction = [UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                [alert dismissViewControllerAnimated:YES completion:nil];
+            }];
+            
+            [alert addAction:dismissAction];
+            
+            [self presentViewController:alert animated:YES completion:nil];
+        }
     }
 }
 
@@ -158,12 +174,12 @@
 #pragma mark -
 #pragma mark MHGalleryDataSource Methods
 
-- (NSInteger)numberOfItemsInGallery:(MHGalleryController*)galleryController
+- (NSInteger)numberOfItemsInGallery:(MHGalleryController *)galleryController
 {
     return self.files.count;
 }
 
-- (MHGalleryItem*)itemForIndex:(NSInteger)index
+- (MHGalleryItem *)itemForIndex:(NSInteger)index
 {
     DBFile *file = self.files[index];
     ImageCellViewModel *viewModel = [[ImageCellViewModel alloc] initWithDBFile:file];
@@ -178,7 +194,7 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(320, 320);
+    return CGSizeMake(CGRectGetWidth(self.view.bounds), 320);
 }
 
 #pragma mark -
@@ -186,6 +202,8 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
+    NSLog(@"%@", info);
+    
     // resize and compress image to save on size :)
     UIImage *image = info[UIImagePickerControllerOriginalImage];
     UIImage *resizedImage = [image resizedImageToFitInSize:CGSizeMake(640, 640) scaleIfSmaller:NO];
@@ -202,7 +220,13 @@
     if (error) {
         NSLog(@"%@", error);
     } else {
+        [SVProgressHUD show];
+        
         if ([imageFile writeData:imageData error:&error]) {
+            [[DataManager sharedInstance] saveLocation:self.location toPath:imagePath];
+            
+            [SVProgressHUD dismiss];
+            
             [picker dismissViewControllerAnimated:YES completion:^{
                 // the file system observer block will get called
                 // so no need to manually call reloadFiles
@@ -211,8 +235,6 @@
             NSLog(@"%@", error);
         }
     }
-    
-    NSLog(@"%@", info);
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
@@ -222,6 +244,11 @@
 
 #pragma mark -
 #pragma mark Private Methods
+
+- (void)processFile:(DBFile *)file
+{
+    
+}
 
 - (void)reloadFiles
 {
@@ -257,6 +284,7 @@
                     
                     if (previouslyOpenedFile) {
                         // this file has been opened already
+                        
                         newFileCache[filename] = previouslyOpenedFile;
                         
                         [self.files removeObject:previouslyOpenedFile];

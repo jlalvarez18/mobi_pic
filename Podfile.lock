@@ -1,23 +1,46 @@
 PODS:
+  - BlocksKit (2.2.5):
+    - BlocksKit/All
+  - BlocksKit/All (2.2.5):
+    - BlocksKit/Core
+    - BlocksKit/DynamicDelegate
+    - BlocksKit/MessageUI
+    - BlocksKit/UIKit
+  - BlocksKit/Core (2.2.5)
+  - BlocksKit/DynamicDelegate (2.2.5)
+  - BlocksKit/MessageUI (2.2.5):
+    - BlocksKit/Core
+    - BlocksKit/DynamicDelegate
+  - BlocksKit/UIKit (2.2.5):
+    - BlocksKit/Core
+    - BlocksKit/DynamicDelegate
+  - INTULocationManager (1.2.0)
   - MHVideoPhotoGallery (1.6.6):
     - SDWebImage
   - PureLayout (2.0.1)
   - SDWebImage (3.7.1):
     - SDWebImage/Core
   - SDWebImage/Core (3.7.1)
+  - SVProgressHUD (1.0)
   - UAProgressView (0.1.1)
   - UIImage-Resize (1.0.1)
 
 DEPENDENCIES:
+  - BlocksKit (~> 2.2)
+  - INTULocationManager
   - MHVideoPhotoGallery
   - PureLayout (~> 2.0)
+  - SVProgressHUD
   - UAProgressView
   - UIImage-Resize (~> 1.0)
 
 SPEC CHECKSUMS:
+  BlocksKit: 4439e7f30a9f90743462ca63545a15c1f4304cef
+  INTULocationManager: 596c57e35a00ca1ee9d59bf4cc2b63dc299b580e
   MHVideoPhotoGallery: 54062f3b997d1353a43722c56b44022309877fef
   PureLayout: 12eca5b6dc94f1a03fdf255d640604584ff1b55b
   SDWebImage: 116e88633b5b416ea0ca4b334a4ac59cf72dd38d
+  SVProgressHUD: 5034c6e22b8c2ca3e09402e48d41ed0340aa1c50
   UAProgressView: c393bc53d1cabc077279e957c5898a5bb7bdb3ce
   UIImage-Resize: fc57263eed2cd98f74e5ba4848bedae979a0bdf0
 
