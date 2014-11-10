@@ -25,6 +25,8 @@
 		0D5DACFF1A0E9244005CE879 /* AuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D5DACFD1A0E9244005CE879 /* AuthViewController.m */; };
 		0D5DAD001A0E9244005CE879 /* AuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D5DACFE1A0E9244005CE879 /* AuthViewController.xib */; };
 		0D7412B91A0EB79600A16970 /* ThumbnailCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D7412B81A0EB79600A16970 /* ThumbnailCollectionViewCell.m */; };
+		0D8DEB331A1106C800FB0C88 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D8DEB321A1106C800FB0C88 /* MapKit.framework */; };
+		0D8DEB361A1106F900FB0C88 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D8DEB351A1106F900FB0C88 /* MapViewController.m */; };
 		0DDD71261A0FC7AF00C76295 /* ImageCellViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DDD71251A0FC7AF00C76295 /* ImageCellViewModel.m */; };
 		0DE859D11A0E8F370065868B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D01A0E8F370065868B /* main.m */; };
 		0DE859D41A0E8F370065868B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE859D31A0E8F370065868B /* AppDelegate.m */; };
@@ -72,6 +74,9 @@
 		0D5DACFE1A0E9244005CE879 /* AuthViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AuthViewController.xib; sourceTree = "<group>"; };
 		0D7412B71A0EB79600A16970 /* ThumbnailCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailCollectionViewCell.h; sourceTree = "<group>"; };
 		0D7412B81A0EB79600A16970 /* ThumbnailCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbnailCollectionViewCell.m; sourceTree = "<group>"; };
+		0D8DEB321A1106C800FB0C88 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		0D8DEB341A1106F900FB0C88 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
+		0D8DEB351A1106F900FB0C88 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
 		0DDD71241A0FC7AF00C76295 /* ImageCellViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCellViewModel.h; sourceTree = "<group>"; };
 		0DDD71251A0FC7AF00C76295 /* ImageCellViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCellViewModel.m; sourceTree = "<group>"; };
 		0DE859CB1A0E8F370065868B /* MobiPic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobiPic.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -97,6 +102,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0D8DEB331A1106C800FB0C88 /* MapKit.framework in Frameworks */,
 				0D5DACFB1A0E90C9005CE879 /* libz.dylib in Frameworks */,
 				0D5DACF91A0E90C0005CE879 /* libc++.dylib in Frameworks */,
 				0D5DACF71A0E90AF005CE879 /* QuartzCore.framework in Frameworks */,
@@ -193,6 +199,8 @@
 			children = (
 				0DE859D51A0E8F370065868B /* MainViewController.h */,
 				0DE859D61A0E8F370065868B /* MainViewController.m */,
+				0D8DEB341A1106F900FB0C88 /* MapViewController.h */,
+				0D8DEB351A1106F900FB0C88 /* MapViewController.m */,
 				0DE859D81A0E8F370065868B /* Main.storyboard */,
 				0D0091E71A1064D00012AD1D /* Cell */,
 			);
@@ -265,6 +273,7 @@
 		D5481CA8D0879DE48311E897 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0D8DEB321A1106C800FB0C88 /* MapKit.framework */,
 				A59F5EFA46335B42EB2D10BB /* libPods-MobiPic.a */,
 			);
 			name = Frameworks;
@@ -421,6 +430,7 @@
 				0D5DACFF1A0E9244005CE879 /* AuthViewController.m in Sources */,
 				0DE859D71A0E8F370065868B /* MainViewController.m in Sources */,
 				0D0091F31A1076230012AD1D /* PhotoDetailsViewController.m in Sources */,
+				0D8DEB361A1106F900FB0C88 /* MapViewController.m in Sources */,
 				0D0091EB1A10664A0012AD1D /* PhotoModel.m in Sources */,
 				0D5003C91A101E0A0083211E /* DataManager.m in Sources */,
 				0DDD71261A0FC7AF00C76295 /* ImageCellViewModel.m in Sources */,

@@ -13,6 +13,7 @@
 @import CoreLocation;
 
 #import "PhotoModel.h"
+#import <BlocksKit/BlocksKit.h>
 
 static NSString *kPhotosTableID = @"Photos";
 
@@ -49,6 +50,18 @@ static NSString *kPhotoLongitudeKey = @"long";
     self.table = [self.datastore getTable:kPhotosTableID];
     
     return self;
+}
+
+- (NSArray *)getAllPhotoModels
+{
+    DBError *error;
+    NSArray *results = [self.table query:nil error:&error];
+    
+    NSArray *models = [results bk_map:^PhotoModel *(DBRecord *record) {
+        return [PhotoModel modelForRecord:record];
+    }];
+    
+    return models;
 }
 
 - (void)savePhoto:(PhotoModel *)model

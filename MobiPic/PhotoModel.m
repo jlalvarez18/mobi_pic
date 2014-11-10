@@ -9,6 +9,7 @@
 #import "PhotoModel.h"
 
 @import CoreLocation.CLLocation;
+
 #import <Dropbox/Dropbox.h>
 
 NSString *const kPhotoPathNameKey = @"path_name";
@@ -18,6 +19,9 @@ static NSString *kPhotoLatitudeKey = @"lat";
 static NSString *kPhotoLongitudeKey = @"long";
 
 @implementation PhotoModel
+
+@synthesize file = _file;
+@synthesize thumbnailFile = _thumbnailFile;
 
 + (PhotoModel *)modelForRecord:(DBRecord *)record
 {
@@ -53,6 +57,33 @@ static NSString *kPhotoLongitudeKey = @"long";
     }
     
     return attr;
+}
+
+- (CLLocationCoordinate2D)coordinate
+{
+    return self.location.coordinate;
+}
+
+- (DBFile *)file
+{
+    if (_file) {
+        return _file;
+    }
+    
+    _file = [[DBFilesystem sharedFilesystem] openFile:self.path error:nil];
+    
+    return _file;
+}
+
+- (DBFile *)thumbnailFile
+{
+    if (_thumbnailFile) {
+        return _thumbnailFile;
+    }
+    
+    _thumbnailFile = [[DBFilesystem sharedFilesystem] openThumbnail:self.path ofSize:DBThumbSizeM inFormat:DBThumbFormatJPG error:nil];
+    
+    return _thumbnailFile;
 }
 
 @end

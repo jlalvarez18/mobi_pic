@@ -16,6 +16,8 @@
 
 + (instancetype)sharedInstance;
 
+- (NSArray *)getAllPhotoModels;
+
 - (void)savePhoto:(PhotoModel *)model;
 - (PhotoModel *)modelForPath:(DBPath *)path;
 

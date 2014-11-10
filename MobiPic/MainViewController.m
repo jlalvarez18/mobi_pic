@@ -46,7 +46,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.title = NSLocalizedString(@"My Photos", nil);
+    self.title = NSLocalizedString(@"Photos", nil);
     
     self.files = [NSMutableOrderedSet orderedSet];
     self.fileCache = [NSMutableDictionary dictionary];
