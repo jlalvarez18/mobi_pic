@@ -52,16 +52,29 @@ static NSString *kPhotoLongitudeKey = @"long";
     return self;
 }
 
-- (NSArray *)getAllPhotoModels
+- (void)getAllPhotoModels:(DMResultsCompletionBlock)completion
 {
-    DBError *error;
-    NSArray *results = [self.table query:nil error:&error];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        DBError *error;
+        NSArray *results = [self.table query:nil error:&error];
+        
+        NSArray *models = [results bk_map:^PhotoModel *(DBRecord *record) {
+            return [PhotoModel modelForRecord:record];
+        }];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(models, error);
+        });
+    });
+}
+
+- (PhotoModel *)modelForPath:(DBPath *)path
+{
+    DBRecord *record = [self recordWithPath:path];
     
-    NSArray *models = [results bk_map:^PhotoModel *(DBRecord *record) {
-        return [PhotoModel modelForRecord:record];
-    }];
+    PhotoModel *model = [PhotoModel modelForRecord:record];
     
-    return models;
+    return model;
 }
 
 - (void)savePhoto:(PhotoModel *)model
@@ -79,13 +92,17 @@ static NSString *kPhotoLongitudeKey = @"long";
     [self.datastore sync:nil];
 }
 
-- (PhotoModel *)modelForPath:(DBPath *)path
+- (void)deletePhoto:(PhotoModel *)model
 {
-    DBRecord *record = [self recordWithPath:path];
+    DBPath *path = model.path;
     
-    PhotoModel *model = [PhotoModel modelForRecord:record];
+    [[DBFilesystem sharedFilesystem] deletePath:path error:nil];
     
-    return model;
+    DBRecord *record = [self recordWithPath:model.path];
+    
+    [record deleteRecord];
+    
+    [self.datastore sync:nil];
 }
 
 #pragma mark - Private

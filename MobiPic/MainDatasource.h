@@ -14,7 +14,7 @@
 
 - (instancetype)initWithCollectionView:(UICollectionView *)collectionView;
 
-- (void)reload;
+- (void)reloadData;
 
 - (DBFile *)fileAtIndexPath:(NSIndexPath *)indexPath;
 

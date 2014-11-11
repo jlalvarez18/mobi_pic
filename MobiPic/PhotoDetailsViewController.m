@@ -45,6 +45,11 @@ static NSString * const reuseIdentifier = @"Cell";
     return self;
 }
 
+- (void)dealloc
+{
+    [self.file close];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -65,9 +70,13 @@ static NSString * const reuseIdentifier = @"Cell";
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    if (self.file == nil) {
+        [self loadFile];
+    }
 }
 
-- (void)reload
+- (void)loadFile
 {
     [SVProgressHUD show];
     
@@ -84,18 +93,58 @@ static NSString * const reuseIdentifier = @"Cell";
             [SVProgressHUD dismiss];
             
             if (self.file) {
-                UIBarButtonItem *shareItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sharePhoto:)];
-                UIBarButtonItem *editItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editPhoto:)];
+                self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editPhoto:)];
                 
-                self.navigationItem.rightBarButtonItems = @[shareItem, editItem];
+                UIBarButtonItem *shareItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sharePhoto:)];
+                UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+                UIBarButtonItem *deleteItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deletePhoto:)];
+                
+                self.toolbarItems = @[shareItem, flexItem, deleteItem];
+                [self.navigationController setToolbarHidden:NO animated:YES];
+            } else {
+                [self.navigationController setToolbarHidden:YES animated:YES];
             }
             
             [self.collectionView reloadData];
+            
+            __weak typeof(self) weakSelf = self;
+            [self.file addObserver:self block:^{
+                // update photo progress
+                NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+                [weakSelf.collectionView reloadItemsAtIndexPaths:@[indexPath]];
+            }];
+            
+            if (self.file.newerStatus.cached) {
+                // Update when the newer version of the file is cached
+                [self.file update:nil];
+            }
         });
     });
 }
 
 #pragma mark - Action Methods
+
+- (void)deletePhoto:(id)sender
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
+                                                                   message:@"This photo will be deleted on all your devices. This cannot be undone."
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:@"Delete Photo" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+        [[DataManager sharedInstance] deletePhoto:self.model];
+        
+        [alert dismissViewControllerAnimated:YES completion:nil];
+    }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        [alert dismissViewControllerAnimated:YES completion:nil];
+    }];
+    
+    [alert addAction:deleteAction];
+    [alert addAction:cancelAction];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
 
 - (void)editPhoto:(id)sender
 {
@@ -130,6 +179,9 @@ static NSString * const reuseIdentifier = @"Cell";
 {
     // Handle the result image here
     NSLog(@"%@", image);
+    
+    [self.file writeData:UIImageJPEGRepresentation(image, 0.7) error:nil];
+    
     [editor dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -141,7 +193,8 @@ static NSString * const reuseIdentifier = @"Cell";
 
 #pragma mark UICollectionViewDataSource
 
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
     if (self.model && self.file) {
         return 3;
     }
@@ -149,7 +202,8 @@ static NSString * const reuseIdentifier = @"Cell";
     return 0;
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
     if (indexPath.row == 0) {
         // the image cell
         
@@ -253,26 +307,6 @@ static NSString * const reuseIdentifier = @"Cell";
     else {
         // location/description cell
         return CGSizeMake(width, 44);
-    }
-}
-
-#pragma mark -
-#pragma mark Accessor Methods
-
-- (void)setFile:(DBFile *)file
-{
-    _file = file;
-    
-    __weak typeof(self) weakSelf = self;
-    [_file addObserver:self block:^{
-        // update photo progress
-        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
-        [weakSelf.collectionView reloadItemsAtIndexPaths:@[indexPath]];
-    }];
-    
-    if (_file.newerStatus.cached) {
-        // Update when the newer version of the file is cached
-        [self.file update:nil];
     }
 }
 

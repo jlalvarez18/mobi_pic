@@ -21,7 +21,7 @@
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 
 @property (nonatomic, strong) NSArray *items;
-@property (nonatomic, assign) BOOL viewLoaded;
+@property (nonatomic, assign) BOOL itemsLoaded;
 
 @end
 
@@ -48,18 +48,14 @@
 {
     [super viewWillAppear:animated];
     
-    if (!self.viewLoaded) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSArray *items = [[DataManager sharedInstance] getAllPhotoModels];
+    if (!self.itemsLoaded) {
+        [[DataManager sharedInstance] getAllPhotoModels:^(NSArray *results, NSError *error) {
+            self.items = results;
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.items = items;
-                
-                [self.mapView addAnnotations:self.items];
-            });
-        });
-        
-        self.viewLoaded = YES;
+            [self.mapView addAnnotations:self.items];
+            
+            self.itemsLoaded = YES;
+        }];
     }
 }
 
@@ -91,7 +87,7 @@
     view.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeInfoDark];
     
     PhotoModel *model = annotation;
-    DBFile *thumbnailFile = [model thumbnailFileForSize:DBThumbSizeS];
+    DBFile *thumbnailFile = [model thumbnailFileForSize:DBThumbSizeS error:nil];
     UIImage *image = [UIImage imageWithData:[thumbnailFile readData:nil]];
     
     view.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:image];
@@ -107,14 +103,5 @@
     
     [self.navigationController pushViewController:detailsController animated:YES];
 }
-
-//- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
-//{
-//    PhotoModel *model = view.annotation;
-//    
-//    PhotoDetailsViewController *detailsController = [[PhotoDetailsViewController alloc] initWithPath:model.path];
-//    
-//    [self.navigationController pushViewController:detailsController animated:YES];
-//}
 
 @end

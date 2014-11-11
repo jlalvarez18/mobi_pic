@@ -11,7 +11,7 @@ target 'MobiPic' do
   pod 'UAProgressView'
   pod 'MHVideoPhotoGallery'
   pod 'INTULocationManager'
-  pod 'SVProgressHUD'
+  pod 'SVProgressHUD', :head
   pod 'BlocksKit', '~> 2.2'
 end
 

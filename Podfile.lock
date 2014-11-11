@@ -21,7 +21,7 @@ PODS:
   - SDWebImage (3.7.1):
     - SDWebImage/Core
   - SDWebImage/Core (3.7.1)
-  - SVProgressHUD (1.0)
+  - SVProgressHUD (HEAD based on 1.0)
   - UAProgressView (0.1.1)
   - UIImage-Resize (1.0.1)
 
@@ -30,7 +30,7 @@ DEPENDENCIES:
   - INTULocationManager
   - MHVideoPhotoGallery
   - PureLayout (~> 2.0)
-  - SVProgressHUD
+  - SVProgressHUD (HEAD)
   - UAProgressView
   - UIImage-Resize (~> 1.0)
 

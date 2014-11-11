@@ -63,12 +63,14 @@
 {
     [super viewWillAppear:animated];
     
+    self.navigationController.toolbarHidden = YES;
+    
     DBAccount *account = [[DBAccountManager sharedManager] linkedAccount];
     
     if (account) {
         if (!self.viewAppeared) {
             // we only want to call this once when view appears
-            [self.datasource reload];
+            [self.datasource reloadData];
             
             if ([self hasCamera]) {
                 [self retrieveUserLocation];

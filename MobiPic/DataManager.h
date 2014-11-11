@@ -11,14 +11,23 @@
 @class DBPath;
 @class CLLocation;
 @class PhotoModel;
+@class DBDatastore;
+@class DBTable;
+
+typedef void(^DMResultsCompletionBlock)(NSArray *results, NSError *error);
 
 @interface DataManager : NSObject
 
+@property (nonatomic, strong, readonly) DBDatastore *datastore;
+@property (nonatomic, strong, readonly) DBTable *table;
+
 + (instancetype)sharedInstance;
 
-- (NSArray *)getAllPhotoModels;
+- (void)getAllPhotoModels:(DMResultsCompletionBlock)completion;
+
+- (PhotoModel *)modelForPath:(DBPath *)path;
 
 - (void)savePhoto:(PhotoModel *)model;
-- (PhotoModel *)modelForPath:(DBPath *)path;
+- (void)deletePhoto:(PhotoModel *)model;
 
 @end

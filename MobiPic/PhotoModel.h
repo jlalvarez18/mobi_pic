@@ -19,22 +19,27 @@
 
 extern NSString *const kPhotoPathNameKey;
 
-@interface PhotoModel : NSObject <MKAnnotation>
+@interface PhotoModel : NSObject
 
 @property (nonatomic, strong) DBPath *path;
 @property (nonatomic, strong) NSString *city;
 @property (nonatomic, strong) NSString *descriptionText;
+@property (nonatomic, strong) NSDate *modifiedDate;
 @property (nonatomic, strong) CLLocation *location;
 
 @property (nonatomic, strong, readonly) DBFile *file;
-
-@property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
-@property (nonatomic, readonly) NSString *title;
 
 + (PhotoModel *)modelForRecord:(DBRecord *)record;
 
 - (NSDictionary *)attributes;
 
-- (DBFile *)thumbnailFileForSize:(DBThumbSize)size;
+- (DBFile *)thumbnailFileForSize:(DBThumbSize)size error:(NSError **)error;
+
+@end
+
+@interface PhotoModel (MKAnnotationSupport) <MKAnnotation>
+
+@property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
+@property (nonatomic, copy, readonly) NSString *title;
 
 @end

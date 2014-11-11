@@ -13,12 +13,16 @@
 #import "ThumbnailCollectionViewCell.h"
 #import "ImageCellViewModel.h"
 
+#import "DataManager.h"
+#import "PhotoModel.h"
+
 @interface MainDatasource () <UICollectionViewDataSource>
 
 @property (nonatomic, weak) UICollectionView *collectionView;
 
 @property (nonatomic, readonly) DBFilesystem *filesystem;
 @property (nonatomic, readonly) DBPath *root;
+@property (nonatomic, readonly) DBDatastore *datastore;
 
 @property (nonatomic, strong) NSMutableOrderedSet *files;
 @property (nonatomic, strong) NSMutableDictionary *fileCache;
@@ -45,12 +49,129 @@
         self.fileCache = [NSMutableDictionary dictionary];
         
         __weak id weakself = self;
-        [self.filesystem addObserver:self forPathAndChildren:self.root block:^{
-            [weakself reload];
+        [[DataManager sharedInstance].datastore addObserver:self block:^{
+            [weakself reloadData];
         }];
     }
     
     return self;
+}
+
+- (void)reloadData
+{
+    DBAccount *account = [[DBAccountManager sharedManager] linkedAccount];
+    
+    if (account) {
+        self.needToReloadFiles = YES;
+        
+        if (self.loadingFiles) {
+            // Currently loading files
+            return;
+        }
+        
+        self.loadingFiles = YES;
+        
+        [[DataManager sharedInstance] getAllPhotoModels:^(NSArray *results, NSError *error) {
+            self.needToReloadFiles = NO;
+            
+            NSSortDescriptor *sortDesc = [[NSSortDescriptor alloc] initWithKey:@"modifiedDate" ascending:NO];
+            NSArray *sortedModels = [results sortedArrayUsingDescriptors:@[sortDesc]];
+            
+            NSMutableOrderedSet *newFiles = [NSMutableOrderedSet orderedSet];
+            NSMutableDictionary *newFileCache = [NSMutableDictionary dictionary];
+            NSMutableArray *addedFiles = [NSMutableArray array];
+            
+            [sortedModels enumerateObjectsUsingBlock:^(PhotoModel *model, NSUInteger idx, BOOL *stop) {
+                DBPath *path = model.path;
+                
+                NSString *fileName = path.name;
+                
+                DBFile *file = self.fileCache[fileName];
+                
+                if (file) {
+                    // this file has been previously opened
+                    
+                    newFileCache[fileName] = file;
+                    
+                    [self.files removeObject:file];
+                    
+                    [newFiles addObject:file];
+                } else {
+                    // this file is new since we last did a reload
+                    
+                    DBError *error;
+                    file = [model thumbnailFileForSize:DBThumbSizeL error:&error];
+                    
+                    if (!file || error) {
+                        NSLog(@"%@", error);
+                    } else {
+                        newFileCache[fileName] = file;
+                        
+                        __weak DBFile *weakFile = file;
+                        __weak typeof(self) weakSelf = self;
+                        
+                        [file addObserver:self block:^{
+                            DBError *error;
+                            if ([weakFile update:&error]) {
+                                [weakSelf reloadCellForFile:weakFile];
+                            } else if ([error dbErrorCode] == DBErrorNotFound) {
+                                // deleted!
+                            }
+                        }];
+                        
+                        [newFiles addObject:file];
+                        
+                        [addedFiles addObject:file];
+                    }
+                }
+            }];
+            
+            NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+            
+            // any of the remaining files have been deleted since we last reloaded
+            [self.files enumerateObjectsUsingBlock:^(DBFile *file, NSUInteger idx, BOOL *stop) {
+                [indexPathsToDelete addObject:[self indexPathForFile:file]];
+                
+                [file removeObserver:self];
+            }];
+            
+            // set the new ordered set of files
+            self.files = newFiles;
+            self.fileCache = newFileCache;
+            
+            NSMutableArray *indexPathsToAdd = [NSMutableArray array];
+            
+            [addedFiles enumerateObjectsUsingBlock:^(DBFile *file, NSUInteger idx, BOOL *stop) {
+                [indexPathsToAdd addObject:[self indexPathForFile:file]];
+            }];
+            
+            self.files = newFiles;
+            
+            NSInteger addedCount = indexPathsToAdd.count;
+            NSInteger removedCount = indexPathsToDelete.count;
+            
+            // we want to make sure we only perform batch updates if we have to
+            if (addedCount > 0 || removedCount > 0) {
+                [self.collectionView performBatchUpdates:^{
+                    if (addedCount > 0) {
+                        [self.collectionView insertItemsAtIndexPaths:indexPathsToAdd];
+                    }
+                    
+                    if (removedCount > 0) {
+                        [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
+                    }
+                } completion:nil];
+            }
+            
+            self.loadingFiles = NO;
+            
+            if (self.needToReloadFiles) {
+                // this means that the reloadFiles method was called while loading
+                // so lets reload just in case
+                [self reloadData];
+            }
+        }];
+    }
 }
 
 #pragma mark -
@@ -77,127 +198,127 @@
 #pragma mark -
 #pragma mark Public Methods
 
-- (void)reload
-{
-    DBAccount *account = [[DBAccountManager sharedManager] linkedAccount];
-    
-    if (account) {
-        self.needToReloadFiles = YES;
-        
-        if (self.loadingFiles) {
-            // Currently loading files
-            return;
-        }
-        
-        self.loadingFiles = YES;
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            self.needToReloadFiles = NO;
-            
-            NSArray *infos = [self.filesystem listFolder:self.root error:nil];
-            
-            NSSortDescriptor *sortDesc = [NSSortDescriptor sortDescriptorWithKey:@"modifiedTime" ascending:NO];
-            NSArray *sortedFileInfos = [infos sortedArrayUsingDescriptors:@[sortDesc]];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSMutableOrderedSet *newFiles = [NSMutableOrderedSet orderedSet];
-                NSMutableDictionary *newFileCache = [NSMutableDictionary dictionary];
-                
-                NSMutableArray *addedFiles = [NSMutableArray array];
-                
-                [sortedFileInfos enumerateObjectsUsingBlock:^(DBFileInfo *info, NSUInteger idx, BOOL *stop) {
-                    NSString *filename = info.path.name;
-                    DBFile *previouslyOpenedFile = self.fileCache[filename];
-                    
-                    if (previouslyOpenedFile) {
-                        // this file has been opened already
-                        
-                        newFileCache[filename] = previouslyOpenedFile;
-                        
-                        [self.files removeObject:previouslyOpenedFile];
-                        
-                        [newFiles addObject:previouslyOpenedFile];
-                    } else {
-                        // this file is new since we last did a reload
-                        
-                        DBError *error;
-                        DBFile *file = [self.filesystem openThumbnail:info.path
-                                                               ofSize:DBThumbSizeL
-                                                             inFormat:DBThumbFormatJPG
-                                                                error:&error];
-                        
-                        if (!file || error) {
-                            NSLog(@"%@", error);
-                        } else {
-                            newFileCache[filename] = file;
-                            
-                            __weak DBFile *weakFile = file;
-                            __weak typeof(self) weakSelf = self;
-                            
-                            [file addObserver:self block:^{
-                                DBError *error;
-                                if ([weakFile update:&error]) {
-                                    [weakSelf reloadCellForFile:weakFile];
-                                } else if ([error dbErrorCode] == DBErrorNotFound) {
-                                    // deleted!
-                                }
-                            }];
-                            
-                            [newFiles addObject:file];
-                            
-                            [addedFiles addObject:file];
-                        }
-                    }
-                }];
-                
-                NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-                
-                // any of the remaining files have been deleted since we last reloaded
-                [self.files enumerateObjectsUsingBlock:^(DBFile *file, NSUInteger idx, BOOL *stop) {
-                    [indexPathsToDelete addObject:[self indexPathForFile:file]];
-                    
-                    [file removeObserver:self];
-                }];
-                
-                // set the new ordered set of files
-                self.files = newFiles;
-                self.fileCache = newFileCache;
-                
-                NSMutableArray *indexPathsToAdd = [NSMutableArray array];
-                
-                [addedFiles enumerateObjectsUsingBlock:^(DBFile *file, NSUInteger idx, BOOL *stop) {
-                    [indexPathsToAdd addObject:[self indexPathForFile:file]];
-                }];
-                
-                self.files = newFiles;
-                
-                NSInteger addedCount = indexPathsToAdd.count;
-                NSInteger removedCount = indexPathsToDelete.count;
-                
-                // we want to make sure we only perform batch updates if we have to
-                if (addedCount > 0 || removedCount > 0) {
-                    [self.collectionView performBatchUpdates:^{
-                        if (addedCount > 0) {
-                            [self.collectionView insertItemsAtIndexPaths:indexPathsToAdd];
-                        }
-                        
-                        if (removedCount > 0) {
-                            [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
-                        }
-                    } completion:nil];
-                }
-                
-                self.loadingFiles = NO;
-                
-                if (self.needToReloadFiles) {
-                    // this means that the reloadFiles method was called while loading
-                    // so lets reload just in case
-                    [self reload];
-                }
-            });
-        });
-    }
-}
+//- (void)reload
+//{
+//    DBAccount *account = [[DBAccountManager sharedManager] linkedAccount];
+//    
+//    if (account) {
+//        self.needToReloadFiles = YES;
+//        
+//        if (self.loadingFiles) {
+//            // Currently loading files
+//            return;
+//        }
+//        
+//        self.loadingFiles = YES;
+//        
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//            self.needToReloadFiles = NO;
+//            
+//            NSArray *infos = [self.filesystem listFolder:self.root error:nil];
+//            
+//            NSSortDescriptor *sortDesc = [NSSortDescriptor sortDescriptorWithKey:@"modifiedTime" ascending:NO];
+//            NSArray *sortedFileInfos = [infos sortedArrayUsingDescriptors:@[sortDesc]];
+//            
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                NSMutableOrderedSet *newFiles = [NSMutableOrderedSet orderedSet];
+//                NSMutableDictionary *newFileCache = [NSMutableDictionary dictionary];
+//                
+//                NSMutableArray *addedFiles = [NSMutableArray array];
+//                
+//                [sortedFileInfos enumerateObjectsUsingBlock:^(DBFileInfo *info, NSUInteger idx, BOOL *stop) {
+//                    NSString *filename = info.path.name;
+//                    DBFile *previouslyOpenedFile = self.fileCache[filename];
+//                    
+//                    if (previouslyOpenedFile) {
+//                        // this file has been opened already
+//                        
+//                        newFileCache[filename] = previouslyOpenedFile;
+//                        
+//                        [self.files removeObject:previouslyOpenedFile];
+//                        
+//                        [newFiles addObject:previouslyOpenedFile];
+//                    } else {
+//                        // this file is new since we last did a reload
+//                        
+//                        DBError *error;
+//                        DBFile *file = [self.filesystem openThumbnail:info.path
+//                                                               ofSize:DBThumbSizeL
+//                                                             inFormat:DBThumbFormatJPG
+//                                                                error:&error];
+//                        
+//                        if (!file || error) {
+//                            NSLog(@"%@", error);
+//                        } else {
+//                            newFileCache[filename] = file;
+//                            
+//                            __weak DBFile *weakFile = file;
+//                            __weak typeof(self) weakSelf = self;
+//                            
+//                            [file addObserver:self block:^{
+//                                DBError *error;
+//                                if ([weakFile update:&error]) {
+//                                    [weakSelf reloadCellForFile:weakFile];
+//                                } else if ([error dbErrorCode] == DBErrorNotFound) {
+//                                    // deleted!
+//                                }
+//                            }];
+//                            
+//                            [newFiles addObject:file];
+//                            
+//                            [addedFiles addObject:file];
+//                        }
+//                    }
+//                }];
+//                
+//                NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+//                
+//                // any of the remaining files have been deleted since we last reloaded
+//                [self.files enumerateObjectsUsingBlock:^(DBFile *file, NSUInteger idx, BOOL *stop) {
+//                    [indexPathsToDelete addObject:[self indexPathForFile:file]];
+//                    
+//                    [file removeObserver:self];
+//                }];
+//                
+//                // set the new ordered set of files
+//                self.files = newFiles;
+//                self.fileCache = newFileCache;
+//                
+//                NSMutableArray *indexPathsToAdd = [NSMutableArray array];
+//                
+//                [addedFiles enumerateObjectsUsingBlock:^(DBFile *file, NSUInteger idx, BOOL *stop) {
+//                    [indexPathsToAdd addObject:[self indexPathForFile:file]];
+//                }];
+//                
+//                self.files = newFiles;
+//                
+//                NSInteger addedCount = indexPathsToAdd.count;
+//                NSInteger removedCount = indexPathsToDelete.count;
+//                
+//                // we want to make sure we only perform batch updates if we have to
+//                if (addedCount > 0 || removedCount > 0) {
+//                    [self.collectionView performBatchUpdates:^{
+//                        if (addedCount > 0) {
+//                            [self.collectionView insertItemsAtIndexPaths:indexPathsToAdd];
+//                        }
+//                        
+//                        if (removedCount > 0) {
+//                            [self.collectionView deleteItemsAtIndexPaths:indexPathsToDelete];
+//                        }
+//                    } completion:nil];
+//                }
+//                
+//                self.loadingFiles = NO;
+//                
+//                if (self.needToReloadFiles) {
+//                    // this means that the reloadFiles method was called while loading
+//                    // so lets reload just in case
+//                    [self reload];
+//                }
+//            });
+//        });
+//    }
+//}
 
 // Reloads the cell for the provided file
 // Updates can be to reflect progress in upload, download or update

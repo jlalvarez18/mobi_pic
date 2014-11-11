@@ -8,11 +8,12 @@
 
 #import "PhotoModel.h"
 
-@import CoreLocation.CLLocation;
-
 #import <Dropbox/Dropbox.h>
 
+@import CoreLocation.CLLocation;
+
 NSString *const kPhotoPathNameKey = @"path_name";
+static NSString *kPhotoModifiedDateKey = @"modified_date";
 static NSString *kPhotoCityKey = @"city";
 static NSString *kPhotoDescriptionKey = @"description";
 static NSString *kPhotoLatitudeKey = @"lat";
@@ -43,6 +44,7 @@ static NSString *kPhotoLongitudeKey = @"long";
     
     model.city = record[kPhotoCityKey];
     model.path = [[DBPath root] childPath:record[kPhotoPathNameKey]];
+    model.modifiedDate = record[kPhotoModifiedDateKey];
     
     double latitude = [record[kPhotoLatitudeKey] doubleValue];
     double longitude = [record[kPhotoLongitudeKey] doubleValue];
@@ -62,6 +64,7 @@ static NSString *kPhotoLongitudeKey = @"long";
     [attr setValue:self.path.name forKey:kPhotoPathNameKey];
     [attr setValue:self.city forKey:kPhotoCityKey];
     [attr setValue:self.descriptionText forKey:kPhotoDescriptionKey];
+    [attr setValue:self.modifiedDate forKey:kPhotoModifiedDateKey];
     
     if (self.location) {
         CLLocationCoordinate2D coordinate = self.location.coordinate;
@@ -71,20 +74,6 @@ static NSString *kPhotoLongitudeKey = @"long";
     }
     
     return attr;
-}
-
-- (CLLocationCoordinate2D)coordinate
-{
-    return self.location.coordinate;
-}
-
-- (NSString *)title
-{
-    if (self.city) {
-        return self.city;
-    }
-    
-    return @"Unknown Location";
 }
 
 - (DBFile *)file
@@ -98,19 +87,42 @@ static NSString *kPhotoLongitudeKey = @"long";
     return _file;
 }
 
-- (DBFile *)thumbnailFileForSize:(DBThumbSize)size
+- (DBFile *)thumbnailFileForSize:(DBThumbSize)size error:(NSError **)error
 {
     DBFile *file = self.thumbnails[@(size)];
     
     if (!file) {
-        file = [[DBFilesystem sharedFilesystem] openThumbnail:self.path ofSize:size inFormat:DBThumbFormatJPG error:nil];
+        DBError *fileError;
+        file = [[DBFilesystem sharedFilesystem] openThumbnail:self.path ofSize:size inFormat:DBThumbFormatJPG error:&fileError];
         
         if (file) {
             self.thumbnails[@(size)] = file;
+        } else {
+            if (error) {
+                *error = fileError;
+            }
         }
     }
     
     return file;
+}
+
+@end
+
+@implementation PhotoModel (MKAnnotationSupport)
+
+- (CLLocationCoordinate2D)coordinate
+{
+    return self.location.coordinate;
+}
+
+- (NSString *)title
+{
+    if (self.city) {
+        return self.city;
+    }
+    
+    return @"Unknown Location";
 }
 
 @end
