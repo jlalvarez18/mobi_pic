@@ -133,11 +133,11 @@ static NSString * const reuseIdentifier = @"Cell";
     UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:@"Delete Photo" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         [[DataManager sharedInstance] deletePhoto:self.model];
         
-        [alert dismissViewControllerAnimated:YES completion:nil];
+        [self.navigationController popViewControllerAnimated:YES];
     }];
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-        [alert dismissViewControllerAnimated:YES completion:nil];
+        
     }];
     
     [alert addAction:deleteAction];

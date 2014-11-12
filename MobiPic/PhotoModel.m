@@ -113,7 +113,11 @@ static NSString *kPhotoLongitudeKey = @"long";
     
     if (!file) {
         DBError *fileError;
-        file = [[DBFilesystem sharedFilesystem] openThumbnail:self.path ofSize:size inFormat:DBThumbFormatJPG error:&fileError];
+        DBFileInfo *info = [[DBFilesystem sharedFilesystem] fileInfoForPath:self.path error:&fileError];
+        
+        if (info.thumbExists) {
+            file = [[DBFilesystem sharedFilesystem] openThumbnail:self.path ofSize:size inFormat:DBThumbFormatJPG error:&fileError];
+        }
         
         if (file) {
             self.thumbnails[@(size)] = file;
