@@ -252,23 +252,20 @@ static DBThumbSize DefaultThumbSize = DBThumbSizeL;
 
 - (NSIndexPath *)indexPathForItem:(PhotoModel *)item
 {
-    // since the files are sorted by modifiedTime we are able to perform a binary search to increase performance
-//    NSInteger index = [self.items indexOfObject:item
-//                                  inSortedRange:NSMakeRange(0, self.items.count)
-//                                        options:NSBinarySearchingFirstEqual
-//                                usingComparator:^NSComparisonResult(PhotoModel *obj1, PhotoModel *obj2) {
-//                                    if ([obj1.path.stringValue isEqualToString:obj2.path.stringValue]) {
-//                                        return NSOrderedSame;
-//                                    }
-//                                    
-//                                    NSDate *date1 = obj1.modifiedDate;
-//                                    NSDate *date2 = obj2.modifiedDate;
-//                                    
-//                                    return [date2 compare:date1];
-//                                }];
-
-    // not exactly ideal, but it gets the job done for a sample app ;)
-    NSInteger index = [self.items indexOfObject:item];
+    // since the files are sorted by modifiedDate we are able to perform a binary search to increase performance
+    NSInteger index = [self.items indexOfObject:item
+                                  inSortedRange:NSMakeRange(0, self.items.count)
+                                        options:NSBinarySearchingFirstEqual
+                                usingComparator:^NSComparisonResult(PhotoModel *obj1, PhotoModel *obj2) {
+                                    if ([obj1.path.stringValue isEqualToString:obj2.path.stringValue]) {
+                                        return NSOrderedSame;
+                                    }
+                                    
+                                    NSDate *date1 = obj1.modifiedDate;
+                                    NSDate *date2 = obj2.modifiedDate;
+                                    
+                                    return [date2 compare:date1];
+                                }];
     
     if (index != NSNotFound) {
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:index inSection:0];
