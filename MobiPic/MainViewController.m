@@ -138,6 +138,7 @@
             model.path = imagePath;
             model.city = self.cityLocation;
             model.location = self.location;
+            model.modifiedDate = [NSDate date];
             
             [[DataManager sharedInstance] savePhoto:model];
             

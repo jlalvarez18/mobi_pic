@@ -20,21 +20,22 @@
     DBFileStatus *fileStatus = file.status;
     DBFileStatus *newerStatus = file.newerStatus;
     
-    NSLog(@"%@", fileStatus);
+    NSLog(@"Status: ----- %@", fileStatus);
+    NSLog(@"Newer Status: ----- %@", newerStatus);
     
     if (fileStatus.cached) {
         _image = [UIImage imageWithData:[file readData:nil]];
         _progress = 1.0;
-    } else {
-        if (fileStatus.state == DBFileStateDownloading || fileStatus.state == DBFileStateUploading) {
-            _progress = fileStatus.progress;
-        }
-        else if (newerStatus && newerStatus.state == DBFileStateDownloading) {
-            _progress = newerStatus.progress;
-        }
-        else {
-            _progress = 0.0;
-        }
+    }
+    
+    if (fileStatus.state == DBFileStateDownloading || fileStatus.state == DBFileStateUploading) {
+        _progress = fileStatus.progress;
+    }
+    else if (newerStatus && newerStatus.state == DBFileStateDownloading) {
+        _progress = newerStatus.progress;
+    }
+    else {
+        _progress = 0.0;
     }
     
     return self;

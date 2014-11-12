@@ -18,6 +18,21 @@ NSString *ThumbnailCollectionViewCellIdentifier = @"ThumbnailCollectionViewCellI
 
 @implementation ThumbnailCollectionViewCell
 
+- (void)awakeFromNib
+{
+    self.clipsToBounds = NO;
+    self.layer.shadowOffset = CGSizeZero;
+    self.layer.shadowOpacity = 0.3;
+    self.layer.shadowRadius = 2.0;
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    self.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.bounds].CGPath;
+}
+
 - (void)prepareForReuse
 {
     self.imageView.image = nil;

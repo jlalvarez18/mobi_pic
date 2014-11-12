@@ -39,7 +39,7 @@ NSString *const PhotoImageCellIdentifier = @"PhotoImageCell";
 
 - (void)setProgress:(float)progress
 {
-    if (progress >= 0 && progress < 1) {
+    if (progress > 0 && progress < 1) {
         self.progressView.hidden = NO;
         [self.progressView setProgress:progress animated:YES];
     } else {

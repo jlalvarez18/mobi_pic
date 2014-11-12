@@ -9,12 +9,15 @@
 #import "MainDatasource.h"
 
 #import <Dropbox/Dropbox.h>
+#import <BlocksKit/BlocksKit.h>
 
 #import "ThumbnailCollectionViewCell.h"
 #import "ImageCellViewModel.h"
 
 #import "DataManager.h"
 #import "PhotoModel.h"
+
+static DBThumbSize DefaultThumbSize = DBThumbSizeL;
 
 @interface MainDatasource () <UICollectionViewDataSource>
 
@@ -24,7 +27,7 @@
 @property (nonatomic, readonly) DBPath *root;
 @property (nonatomic, readonly) DBDatastore *datastore;
 
-@property (nonatomic, strong) NSMutableOrderedSet *files;
+@property (nonatomic, strong) NSMutableArray *items;
 @property (nonatomic, strong) NSMutableDictionary *fileCache;
 
 @property (nonatomic) BOOL loadingFiles;
@@ -45,7 +48,7 @@
         [self.collectionView registerNib:[UINib nibWithNibName:@"ThumbnailCollectionViewCell" bundle:nil]
               forCellWithReuseIdentifier:ThumbnailCollectionViewCellIdentifier];
         
-        self.files = [NSMutableOrderedSet orderedSet];
+        self.items = [NSMutableArray array];
         self.fileCache = [NSMutableDictionary dictionary];
         
         __weak id weakself = self;
@@ -77,9 +80,9 @@
             NSSortDescriptor *sortDesc = [[NSSortDescriptor alloc] initWithKey:@"modifiedDate" ascending:NO];
             NSArray *sortedModels = [results sortedArrayUsingDescriptors:@[sortDesc]];
             
-            NSMutableOrderedSet *newFiles = [NSMutableOrderedSet orderedSet];
+            NSMutableArray *newItems = [NSMutableArray array];
             NSMutableDictionary *newFileCache = [NSMutableDictionary dictionary];
-            NSMutableArray *addedFiles = [NSMutableArray array];
+            NSMutableArray *addedItems = [NSMutableArray array];
             
             [sortedModels enumerateObjectsUsingBlock:^(PhotoModel *model, NSUInteger idx, BOOL *stop) {
                 DBPath *path = model.path;
@@ -93,59 +96,52 @@
                     
                     newFileCache[fileName] = file;
                     
-                    [self.files removeObject:file];
-                    
-                    [newFiles addObject:file];
+                    [self.items removeObject:model];
+                    [newItems addObject:model];
                 } else {
                     // this file is new since we last did a reload
                     
                     DBError *error;
-                    file = [model thumbnailFileForSize:DBThumbSizeL error:&error];
+                    file = [model thumbnailFileForSize:DefaultThumbSize error:&error];
                     
                     if (!file || error) {
                         NSLog(@"%@", error);
                     } else {
-                        newFileCache[fileName] = file;
-                        
                         __weak DBFile *weakFile = file;
                         __weak typeof(self) weakSelf = self;
                         
                         [file addObserver:self block:^{
                             DBError *error;
                             if ([weakFile update:&error]) {
-                                [weakSelf reloadCellForFile:weakFile];
+                                [weakSelf reloadCellForItem:model];
                             } else if ([error dbErrorCode] == DBErrorNotFound) {
                                 // deleted!
+                                [[DataManager sharedInstance] deletePhoto:model];
+                            } else {
+                                NSLog(@"%@", error);
                             }
                         }];
                         
-                        [newFiles addObject:file];
+                        newFileCache[fileName] = file;
                         
-                        [addedFiles addObject:file];
+                        [newItems addObject:model];
+                        [addedItems addObject:model];
                     }
                 }
             }];
             
-            NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-            
             // any of the remaining files have been deleted since we last reloaded
-            [self.files enumerateObjectsUsingBlock:^(DBFile *file, NSUInteger idx, BOOL *stop) {
-                [indexPathsToDelete addObject:[self indexPathForFile:file]];
-                
-                [file removeObserver:self];
+            NSArray *indexPathsToDelete = [self.items bk_map:^NSIndexPath *(PhotoModel *item) {
+                return [self indexPathForItem:item];
             }];
             
-            // set the new ordered set of files
-            self.files = newFiles;
+            self.items = newItems;
             self.fileCache = newFileCache;
             
-            NSMutableArray *indexPathsToAdd = [NSMutableArray array];
-            
-            [addedFiles enumerateObjectsUsingBlock:^(DBFile *file, NSUInteger idx, BOOL *stop) {
-                [indexPathsToAdd addObject:[self indexPathForFile:file]];
+            // items that have been added since we last reloaded
+            NSArray *indexPathsToAdd = [addedItems bk_map:^NSIndexPath *(PhotoModel *item) {
+                return [self indexPathForItem:item];
             }];
-            
-            self.files = newFiles;
             
             NSInteger addedCount = indexPathsToAdd.count;
             NSInteger removedCount = indexPathsToDelete.count;
@@ -179,16 +175,16 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return self.files.count;
+    return self.items.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     ThumbnailCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:ThumbnailCollectionViewCellIdentifier forIndexPath:indexPath];
     
-    DBFile *file = self.files[indexPath.row];
+    PhotoModel *model = self.items[indexPath.row];
     
-    ImageCellViewModel *viewModel = [[ImageCellViewModel alloc] initWithDBFile:file];
+    ImageCellViewModel *viewModel = [[ImageCellViewModel alloc] initWithDBFile:[model thumbnailFileForSize:DefaultThumbSize error:nil]];
     
     cell.image = viewModel.image;
     
@@ -323,9 +319,15 @@
 // Reloads the cell for the provided file
 // Updates can be to reflect progress in upload, download or update
 // or to change the image visible in a cell once an update or download is complete
-- (void)reloadCellForFile:(DBFile *)file
+- (void)reloadCellForItem:(PhotoModel *)item
 {
-    NSIndexPath *indexPath = [self indexPathForFile:file];
+    if (!item) {
+        return;
+    }
+    
+    NSIndexPath *indexPath = [self indexPathForItem:item];
+    
+    DBFile *file = [item thumbnailFileForSize:DefaultThumbSize error:nil];
     
     if (!file || ![file isOpen] || !indexPath) {
         return;
@@ -339,18 +341,24 @@
     [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
 }
 
-- (NSIndexPath *)indexPathForFile:(DBFile *)file
+- (NSIndexPath *)indexPathForItem:(PhotoModel *)item
 {
     // since the files are sorted by modifiedTime we are able to perform a binary search to increase performance
-    NSInteger index = [self.files indexOfObject:file
-                                  inSortedRange:NSMakeRange(0, self.files.count)
-                                        options:NSBinarySearchingFirstEqual
-                                usingComparator:^NSComparisonResult(DBFile *obj1, DBFile *obj2) {
-                                    NSDate *date1 = obj1.info.modifiedTime;
-                                    NSDate *date2 = obj2.info.modifiedTime;
-                                    
-                                    return [date2 compare:date1];
-                                }];
+//    NSInteger index = [self.items indexOfObject:item
+//                                  inSortedRange:NSMakeRange(0, self.items.count)
+//                                        options:NSBinarySearchingFirstEqual
+//                                usingComparator:^NSComparisonResult(PhotoModel *obj1, PhotoModel *obj2) {
+//                                    if ([obj1.path.stringValue isEqualToString:obj2.path.stringValue]) {
+//                                        return NSOrderedSame;
+//                                    }
+//                                    
+//                                    NSDate *date1 = obj1.modifiedDate;
+//                                    NSDate *date2 = obj2.modifiedDate;
+//                                    
+//                                    return [date2 compare:date1];
+//                                }];
+
+    NSInteger index = [self.items indexOfObject:item];
     
     if (index != NSNotFound) {
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:index inSection:0];
@@ -363,7 +371,9 @@
 
 - (DBFile *)fileAtIndexPath:(NSIndexPath *)indexPath
 {
-    return self.files[indexPath.row];
+    PhotoModel *model = self.items[indexPath.row];
+    
+    return [model thumbnailFileForSize:DefaultThumbSize error:nil];
 }
 
 #pragma mark -

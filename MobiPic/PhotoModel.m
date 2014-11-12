@@ -38,6 +38,26 @@ static NSString *kPhotoLongitudeKey = @"long";
     return self;
 }
 
+- (BOOL)isEqual:(id)other
+{
+    if (other == self) {
+        return YES;
+    }
+    else if (![other isKindOfClass:[self class]]) {
+        return NO;
+    }
+    else {
+        PhotoModel *otherModel = other;
+        
+        return [self.path isEqual:otherModel.path];
+    }
+}
+
+- (NSUInteger)hash
+{
+    return self.path.hash;
+}
+
 + (PhotoModel *)modelForRecord:(DBRecord *)record
 {
     PhotoModel *model = [PhotoModel new];
@@ -73,7 +93,7 @@ static NSString *kPhotoLongitudeKey = @"long";
         [attr setValue:@(coordinate.longitude) forKey:kPhotoLongitudeKey];
     }
     
-    return attr;
+    return [attr copy];
 }
 
 - (DBFile *)file
